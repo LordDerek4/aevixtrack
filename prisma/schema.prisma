@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum BillingCycle {
+  MONTHLY
+  YEARLY
+}
+
+enum SubscriptionType {
+  PAID
+  FREE_TRIAL
+  FREEMIUM
+}
+
+enum ReminderOffset {
+  ONE_DAY
+  THREE_DAYS
+  SEVEN_DAYS
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  ARCHIVED
+}
+
+model User {
+  id            String         @id @db.Uuid
+  email         String         @unique
+  fullName      String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  subscriptions Subscription[]
+  reminders     Reminder[]
+  settings      Settings?
+
+  @@map("users")
+}
+
+model Subscription {
+  id               String             @id @default(uuid()) @db.Uuid
+  userId           String             @db.Uuid
+  serviceName      String
+  category         String
+  cost             Decimal            @db.Decimal(10, 2)
+  billingCycle     BillingCycle       @default(MONTHLY)
+  renewalDate      DateTime
+  notes            String?
+  subscriptionType SubscriptionType   @default(PAID)
+  status           SubscriptionStatus @default(ACTIVE)
+  isFreeTrial      Boolean            @default(false)
+  trialEndsAt      DateTime?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reminders        Reminder[]
+
+  @@index([userId, renewalDate])
+  @@map("subscriptions")
+}
+
+model Reminder {
+  id             String         @id @default(uuid()) @db.Uuid
+  userId         String         @db.Uuid
+  subscriptionId String         @db.Uuid
+  offset         ReminderOffset
+  emailEnabled   Boolean        @default(true)
+  sentAt         DateTime?
+  createdAt      DateTime       @default(now())
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscription   Subscription   @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@unique([subscriptionId, offset])
+  @@index([userId])
+  @@map("reminders")
+}
+
+model Settings {
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String   @unique @db.Uuid
+  currency        String   @default("USD")
+  darkMode        Boolean  @default(true)
+  emailReminders  Boolean  @default(true)
+  reminderOffsets String[] @default(["ONE_DAY", "THREE_DAYS", "SEVEN_DAYS"])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("settings")
+}
