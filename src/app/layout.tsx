@@ -31,8 +31,6 @@ export default function RootLayout({
         <ClerkProvider
           signInUrl="/login"
           signUpUrl="/register"
-          afterSignInUrl="/dashboard"
-          afterSignUpUrl="/dashboard"
         >
           {children}
           <Toaster richColors position="top-right" theme="dark" />
