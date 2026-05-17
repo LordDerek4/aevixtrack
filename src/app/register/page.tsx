@@ -78,7 +78,7 @@ export default function RegisterPage() {
             <ArrowLeft className="size-4" />
             Back home
           </Link>
-          <SignUp routing="hash" appearance={clerkAppearance} />
+          <SignUp appearance={clerkAppearance} />
         </div>
       </section>
     </main>

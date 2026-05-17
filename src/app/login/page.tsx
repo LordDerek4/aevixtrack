@@ -78,7 +78,7 @@ export default function LoginPage() {
             <ArrowLeft className="size-4" />
             Back home
           </Link>
-          <SignIn routing="hash" appearance={clerkAppearance} />
+          <SignIn appearance={clerkAppearance} />
         </div>
       </section>
     </main>
