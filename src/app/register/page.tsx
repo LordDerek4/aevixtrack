@@ -45,7 +45,8 @@ const clerkAppearance = {
     footerActionLink: { color: "#d8e3dc" },
     footerActionText: { color: "rgba(255,255,255,0.4)" },
     identityPreviewText: { color: "rgba(255,255,255,0.8)" },
-    identityPreviewEditButton: { color: "#d8e3dc" }
+    identityPreviewEditButton: { color: "#d8e3dc" },
+    badge: { display: "none" }
   }
 };
 
