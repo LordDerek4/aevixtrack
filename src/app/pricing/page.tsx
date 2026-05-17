@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowLeft, Check } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { LinkButton } from "@/components/ui/button";
+import { UpgradeButton } from "@/components/marketing/upgrade-button";
 import { pricingTiers } from "@/lib/constants";
 
 export default function PricingPage() {
@@ -26,10 +27,14 @@ export default function PricingPage() {
             <Card key={tier.name} className={tier.highlighted ? "bg-white text-black" : ""}>
               <p className={tier.highlighted ? "text-black/60" : "text-white/[0.56]"}>{tier.name}</p>
               <div className="mt-5 flex items-end gap-2">
-                <span className="text-5xl font-semibold tracking-[-0.05em]">{tier.price}</span>
-                <span className={tier.highlighted ? "mb-2 text-black/[0.46]" : "mb-2 text-white/[0.42]"}>/mo</span>
+                <span className={tier.highlighted ? "text-7xl font-bold tracking-[-0.05em]" : "text-5xl font-semibold tracking-[-0.05em]"}>
+                  {tier.price}
+                </span>
+                <span className={tier.highlighted ? "mb-3 text-black/[0.46]" : "mb-2 text-white/[0.42]"}>/mo</span>
               </div>
-              <p className={tier.highlighted ? "mt-4 text-sm text-black/[0.58]" : "mt-4 text-sm text-white/[0.56]"}>{tier.description}</p>
+              <p className={tier.highlighted ? "mt-4 text-sm text-black/[0.58]" : "mt-4 text-sm text-white/[0.56]"}>
+                {tier.description}
+              </p>
               <div className="mt-8 grid gap-3">
                 {tier.features.map((feature) => (
                   <div key={feature} className="flex items-center gap-3 text-sm">
@@ -38,13 +43,28 @@ export default function PricingPage() {
                   </div>
                 ))}
               </div>
-              <LinkButton
-                href="/register"
-                className={tier.highlighted ? "mt-8 w-full bg-black text-white hover:bg-black/80" : "mt-8 w-full"}
-                variant={tier.highlighted ? "primary" : "secondary"}
-              >
-                Get started
-              </LinkButton>
+
+              {tier.name === "Starter" ? (
+                <LinkButton
+                  href="/register"
+                  className="mt-8 w-full"
+                  variant="secondary"
+                >
+                  Get started free
+                </LinkButton>
+              ) : tier.name === "Pro" ? (
+                <UpgradeButton
+                  plan="PRO"
+                  className="mt-8 w-full bg-black text-white hover:bg-black/80"
+                  variant="primary"
+                />
+              ) : (
+                <UpgradeButton
+                  plan="BUSINESS"
+                  className="mt-8 w-full"
+                  variant="secondary"
+                />
+              )}
             </Card>
           ))}
         </div>

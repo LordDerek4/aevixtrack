@@ -11,3 +11,8 @@ prisma/dev.db
 *.log
 *.err
 ping.log
+
+# Local Netlify folder
+.netlify
+
+.vercel

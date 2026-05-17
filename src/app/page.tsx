@@ -73,8 +73,8 @@ export default function LandingPage() {
             <Card key={tier.name} className={tier.highlighted ? "bg-white text-black" : ""}>
               <p className={tier.highlighted ? "text-black/60" : "text-white/[0.56]"}>{tier.name}</p>
               <div className="mt-5 flex items-end gap-2">
-                <span className="text-5xl font-semibold tracking-[-0.05em]">{tier.price}</span>
-                <span className={tier.highlighted ? "mb-2 text-black/[0.46]" : "mb-2 text-white/[0.42]"}>/mo</span>
+                <span className={tier.highlighted ? "text-7xl font-bold tracking-[-0.05em]" : "text-5xl font-semibold tracking-[-0.05em]"}>{tier.price}</span>
+                <span className={tier.highlighted ? "mb-3 text-black/[0.46]" : "mb-2 text-white/[0.42]"}>/mo</span>
               </div>
               <p className={tier.highlighted ? "mt-4 text-sm text-black/[0.58]" : "mt-4 text-sm text-white/[0.56]"}>{tier.description}</p>
               <div className="mt-8 grid gap-3">
