@@ -30,11 +30,11 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="hidden min-h-screen w-72 shrink-0 border-r border-white/10 bg-black/[0.36] px-5 py-6 backdrop-blur-xl lg:flex lg:flex-col">
+    <aside className="hidden min-h-screen w-72 shrink-0 border-r border-green-500/20 bg-black/20 px-5 py-6 backdrop-blur-xl lg:flex lg:flex-col">
       <Logo />
 
       <div className="mt-8 rounded-[28px] border border-white/10 bg-white/[0.04] p-3">
-        <div className="flex items-center gap-3 rounded-2xl bg-black/30 px-3 py-2 text-sm text-white/[0.46]">
+        <div className="flex items-center gap-3 rounded-2xl bg-black/20 px-3 py-2 text-sm text-white/[0.46]">
           <Search className="size-4" />
           Quick search
         </div>

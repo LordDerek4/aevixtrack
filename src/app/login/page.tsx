@@ -54,7 +54,7 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-screen items-center justify-center">
       <div className="w-full max-w-md px-4">
-        <div className="rounded-[28px] border border-green-500/20 bg-black/50 p-8 shadow-2xl backdrop-blur-2xl">
+        <div className="rounded-[28px] border border-green-500/20 bg-black/20 p-8 shadow-2xl backdrop-blur-2xl">
           <Link
             href="/"
             className="mb-6 inline-flex items-center gap-2 text-sm text-green-400/60 hover:text-green-400 transition-colors"

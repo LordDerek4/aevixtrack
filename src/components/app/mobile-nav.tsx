@@ -15,7 +15,7 @@ export function MobileNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed inset-x-4 bottom-4 z-50 grid grid-cols-3 rounded-full border border-white/10 bg-black/80 p-2 shadow-soft backdrop-blur-xl lg:hidden">
+    <nav className="fixed inset-x-4 bottom-4 z-50 grid grid-cols-3 rounded-full border border-green-500/25 bg-black/25 p-2 shadow-soft backdrop-blur-xl lg:hidden">
       {navItems.map((item) => {
         const Icon = item.icon;
         const active = !item.href.includes("#") && pathname === item.href;

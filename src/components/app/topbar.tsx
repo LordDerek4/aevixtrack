@@ -99,7 +99,7 @@ export function Topbar({
           </button>
 
           {open && (
-            <div className="absolute right-0 top-14 z-50 w-80 rounded-[20px] border border-white/10 bg-[#111] shadow-2xl">
+            <div className="absolute right-0 top-14 z-50 w-80 rounded-[20px] border border-green-500/20 bg-black/40 shadow-2xl backdrop-blur-xl">
               <div className="flex items-center justify-between border-b border-white/[0.08] px-4 py-3">
                 <p className="text-sm font-semibold">Notifications</p>
                 {unread === 0 && notifications.length > 0 && (
