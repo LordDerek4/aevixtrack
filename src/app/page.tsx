@@ -108,13 +108,16 @@ export default function LandingPage() {
               key={tier.name}
               className={
                 tier.highlighted
-                  ? "rounded-[28px] border border-green-400/50 p-5 py-2"
-                  : "rounded-[28px] border border-white/10 p-5 py-2"
+                  ? "rounded-[28px] border border-green-400/70 p-5 py-2 shadow-[0_0_32px_rgba(74,222,128,0.15)]"
+                  : "rounded-[28px] border border-green-500/25 p-5 py-2"
               }
             >
-              <p className="text-white/60">{tier.name}</p>
+              <p className="text-green-400/70 text-sm font-medium">{tier.name}</p>
               <div className="mt-5 flex items-end gap-2">
-                <span className={tier.highlighted ? "text-7xl font-bold tracking-[-0.05em] text-green-400" : "text-5xl font-semibold tracking-[-0.05em]"}>
+                <span className={tier.highlighted
+                  ? "text-7xl font-bold tracking-[-0.05em] text-green-400 drop-shadow-[0_0_20px_rgba(74,222,128,0.5)]"
+                  : "text-5xl font-semibold tracking-[-0.05em] text-green-300"
+                }>
                   {tier.price}
                 </span>
                 <span className="mb-2 text-white/40">/mo</span>
@@ -123,7 +126,7 @@ export default function LandingPage() {
               <div className="mt-8 grid gap-3">
                 {tier.features.map((feature) => (
                   <div key={feature} className="flex items-center gap-3 text-sm">
-                    <Check className={tier.highlighted ? "size-4 text-green-400" : "size-4"} />
+                    <Check className="size-4 text-green-400" />
                     {feature}
                   </div>
                 ))}

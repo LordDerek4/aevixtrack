@@ -35,7 +35,7 @@ export default function RootLayout({
           playsInline
           className="fixed inset-0 -z-10 h-full w-full object-cover"
         >
-          <source src="/Design.mp4" type="video/mp4" />
+          <source src="/Design2.mp4" type="video/mp4" />
         </video>
         <ClerkProvider
           signInUrl="/login"
