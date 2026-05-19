@@ -1,16 +1,6 @@
 @echo off
-title AevixTrack - Dev Server
-
+title AevixTrack Dev Server
+cd /d "%~dp0"
 echo Starting AevixTrack...
-echo.
-
-:: Install dependencies if node_modules is missing
-if not exist "node_modules" (
-    echo Installing dependencies...
-    call npm install
-    echo.
-)
-
-:: Start the dev server and open the browser
-start "" http://localhost:3000
-npm run dev
+call npm run dev
+pause

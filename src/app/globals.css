@@ -19,10 +19,13 @@ html {
 body {
   min-height: 100vh;
   margin: 0;
-  background:
-    radial-gradient(circle at 85% 12%, rgba(211, 230, 216, 0.34), transparent 30rem),
-    radial-gradient(circle at 6% 78%, rgba(174, 202, 194, 0.22), transparent 26rem),
-    linear-gradient(180deg, #151817 0%, #050606 45%, #020303 100%);
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.72)),
+    url('/Design.gif');
+  background-size: cover, cover;
+  background-position: center, center;
+  background-attachment: fixed, fixed;
+  background-repeat: no-repeat, no-repeat;
   color: var(--foreground);
   font-feature-settings: "ss01", "cv01", "cv11";
 }

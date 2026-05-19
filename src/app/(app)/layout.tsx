@@ -3,7 +3,7 @@ import { Sidebar } from "@/components/app/sidebar";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
-    <main className="min-h-screen bg-black text-white">
+    <main className="min-h-screen text-white">
       <div className="flex min-h-screen">
         <Sidebar />
         <section className="min-w-0 flex-1">

@@ -4,13 +4,13 @@ import { SignIn } from "@clerk/nextjs";
 
 const clerkAppearance = {
   variables: {
-    colorPrimary: "#6d28d9",
+    colorPrimary: "#22c55e",
     colorBackground: "transparent",
-    colorText: "#1e1040",
-    colorTextSecondary: "rgba(30,16,64,0.6)",
-    colorInputBackground: "rgba(255,255,255,0.55)",
-    colorInputText: "#1e1040",
-    colorNeutral: "rgba(30,16,64,0.25)",
+    colorText: "#f0fdf4",
+    colorTextSecondary: "rgba(240,253,244,0.6)",
+    colorInputBackground: "rgba(0,0,0,0.45)",
+    colorInputText: "#f0fdf4",
+    colorNeutral: "rgba(240,253,244,0.25)",
     borderRadius: "12px",
     fontFamily: "inherit"
   },
@@ -22,57 +22,42 @@ const clerkAppearance = {
       border: "none",
       padding: "0"
     },
-    headerTitle: { color: "#1e1040", fontWeight: "700" },
-    headerSubtitle: { color: "rgba(30,16,64,0.6)" },
+    headerTitle: { color: "#f0fdf4", fontWeight: "700" },
+    headerSubtitle: { color: "rgba(240,253,244,0.6)" },
     socialButtonsBlockButton: {
-      border: "1px solid rgba(255,255,255,0.5)",
-      background: "rgba(255,255,255,0.35)",
-      color: "#1e1040",
+      border: "1px solid rgba(34,197,94,0.35)",
+      background: "rgba(0,0,0,0.4)",
+      color: "#f0fdf4",
       backdropFilter: "blur(8px)"
     },
-    dividerLine: { background: "rgba(30,16,64,0.12)" },
-    dividerText: { color: "rgba(30,16,64,0.45)" },
-    formFieldLabel: { color: "rgba(30,16,64,0.75)" },
+    dividerLine: { background: "rgba(34,197,94,0.2)" },
+    dividerText: { color: "rgba(240,253,244,0.45)" },
+    formFieldLabel: { color: "rgba(240,253,244,0.75)" },
     formFieldInput: {
-      background: "rgba(255,255,255,0.55)",
-      border: "1px solid rgba(255,255,255,0.6)",
-      color: "#1e1040"
+      background: "rgba(0,0,0,0.45)",
+      border: "1px solid rgba(34,197,94,0.3)",
+      color: "#f0fdf4"
     },
     formButtonPrimary: {
-      background: "linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%)",
+      background: "linear-gradient(135deg, #16a34a 0%, #15803d 100%)",
       color: "#ffffff",
-      boxShadow: "0 4px 20px rgba(109,40,217,0.4)"
+      boxShadow: "0 4px 20px rgba(34,197,94,0.35)"
     },
-    footerActionLink: { color: "#6d28d9", fontWeight: "600" },
-    footerActionText: { color: "rgba(30,16,64,0.55)" },
-    identityPreviewText: { color: "#1e1040" },
-    identityPreviewEditButton: { color: "#6d28d9" }
+    footerActionLink: { color: "#4ade80", fontWeight: "600" },
+    footerActionText: { color: "rgba(240,253,244,0.55)" },
+    identityPreviewText: { color: "#f0fdf4" },
+    identityPreviewEditButton: { color: "#4ade80" }
   }
 };
 
 export default function LoginPage() {
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden">
-      {/* Animated background video */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="absolute inset-0 h-full w-full object-cover"
-      >
-        <source src="/design.mp4" type="video/mp4" />
-      </video>
-
-      {/* Soft overlay */}
-      <div className="absolute inset-0 bg-purple-900/10" />
-
-      {/* Card */}
-      <div className="relative z-10 w-full max-w-md px-4">
-        <div className="rounded-[28px] border border-white/40 bg-white/25 p-8 shadow-2xl backdrop-blur-2xl">
+    <main className="flex min-h-screen items-center justify-center">
+      <div className="w-full max-w-md px-4">
+        <div className="rounded-[28px] border border-green-500/20 bg-black/50 p-8 shadow-2xl backdrop-blur-2xl">
           <Link
             href="/"
-            className="mb-6 inline-flex items-center gap-2 text-sm text-indigo-900/60 hover:text-indigo-900 transition-colors"
+            className="mb-6 inline-flex items-center gap-2 text-sm text-green-400/60 hover:text-green-400 transition-colors"
           >
             <ArrowLeft className="size-4" />
             Back home
