@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Check, Sparkles } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import { MarketingNav } from "@/components/marketing/nav";
 import { Badge } from "@/components/ui/badge";
 import { LinkButton } from "@/components/ui/button";
@@ -20,42 +20,7 @@ const faqs = [
 export default function LandingPage() {
   return (
     <main className="min-h-screen px-3 py-4 text-white sm:px-6 lg:px-10">
-      <div className="mx-auto max-w-[1536px] rounded-[34px] bg-black p-2 shadow-soft md:rounded-[44px] md:p-6">
-        <MarketingNav />
-
-        {/* Hero */}
-        <section className="hero-mist noise relative mx-auto min-h-[720px] overflow-hidden rounded-[28px] border border-white/10 md:rounded-[36px]">
-          <div className="relative z-10 flex min-h-[720px] flex-col items-center justify-center px-6 py-24 text-center">
-            <Badge className="mb-8 gap-2 bg-black/[0.34]">
-              <Sparkles className="size-3.5" />
-              Unlock your subscription clarity
-              <ArrowRight className="size-3.5" />
-            </Badge>
-            <h1 className="max-w-5xl text-balance text-5xl font-semibold tracking-[-0.065em] text-white sm:text-6xl md:text-8xl">
-              One-click for Subscription Defense
-            </h1>
-            <p className="mt-7 max-w-2xl text-base leading-7 text-white/[0.62] md:text-xl">
-              Forgotten subscriptions quietly waste money. AevixTrack keeps paid tools, free trials, renewal reminders, and spend forecasts in one calm dashboard.
-            </p>
-            <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row">
-              <LinkButton href="/dashboard" variant="secondary">
-                Open App
-                <ArrowRight className="size-4" />
-              </LinkButton>
-              <LinkButton href="/register">Start Free</LinkButton>
-            </div>
-          </div>
-          <div className="absolute bottom-12 right-12 hidden md:block">
-            <p className="text-sm text-fog/80">Budget horizons</p>
-            <div className="mt-3 flex gap-2">
-              <span className="h-1.5 w-8 rounded-full bg-white" />
-              <span className="h-1.5 w-8 rounded-full bg-white/10" />
-              <span className="h-1.5 w-8 rounded-full bg-white/10" />
-              <span className="h-1.5 w-8 rounded-full bg-white/10" />
-            </div>
-          </div>
-        </section>
-      </div>
+      <MarketingNav />
 
       {/* Pricing */}
       <section className="mx-auto max-w-7xl px-2 py-10">
