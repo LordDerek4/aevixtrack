@@ -130,7 +130,7 @@ export function SubscriptionForm({
           </FieldLabel>
         </div>
 
-        <label className="mt-5 flex items-center justify-between rounded-2xl border border-white/10 bg-black/[0.24] p-4 text-sm text-white/70">
+        <label className="mt-5 flex items-center justify-between rounded-2xl border border-green-500/20 p-4 text-sm text-white/70">
           Free trial
           <input
             type="checkbox"
@@ -158,7 +158,7 @@ export function SubscriptionForm({
           <p className="mb-3 text-sm text-white/[0.68]">Reminder options</p>
           <div className="grid gap-3 sm:grid-cols-3">
             {reminderOptions.map((option) => (
-              <label key={option.value} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white/70">
+              <label key={option.value} className="flex items-center gap-3 rounded-2xl border border-green-500/20 px-4 py-3 text-sm text-white/70">
                 <input
                   name="reminders"
                   type="checkbox"

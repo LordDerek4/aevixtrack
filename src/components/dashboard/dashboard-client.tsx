@@ -88,9 +88,9 @@ function TrialProgress({ subscription }: { subscription: SubscriptionRecord }) {
 
 function ErrorState({ onRetry }: { onRetry: () => void }) {
   return (
-    <div className="mt-8 flex min-h-[480px] flex-col items-center justify-center rounded-[32px] border border-white/10 bg-white/[0.02] p-12 text-center">
-      <div className="grid size-16 place-items-center rounded-2xl bg-white/[0.06]">
-        <WifiOff className="size-7 text-white/30" />
+    <div className="mt-8 flex min-h-[480px] flex-col items-center justify-center p-12 text-center">
+      <div className="grid size-16 place-items-center rounded-2xl">
+        <WifiOff className="size-7 text-white/50" />
       </div>
       <h2 className="mt-5 text-xl font-semibold tracking-[-0.02em]">Unable to load subscriptions</h2>
       <p className="mt-2 max-w-sm text-sm leading-6 text-white/50">
@@ -312,7 +312,7 @@ export function DashboardClient() {
                     <p className="text-sm text-white/50">{metric.label}</p>
                     <span className={cn(
                       "grid size-10 place-items-center rounded-2xl",
-                      metric.warn ? "bg-amber-500/15" : "bg-white/[0.08]"
+                      metric.warn ? "bg-amber-500/10" : ""
                     )}>
                       <Icon className={cn("size-5", metric.warn ? "text-amber-400" : "text-fog")} />
                     </span>
@@ -354,7 +354,7 @@ export function DashboardClient() {
                   );
                 })}
                 {stats.monthly === 0 && (
-                  <p className="rounded-2xl bg-white/[0.04] p-5 text-sm text-white/[0.46]">
+                  <p className="p-5 text-sm text-white/50">
                     No active subscriptions yet.
                   </p>
                 )}
@@ -374,8 +374,7 @@ export function DashboardClient() {
                     const days = daysUntil(s.renewalDate);
                     return (
                       <div key={s.id} className={cn(
-                        "flex items-center justify-between rounded-2xl border p-3 transition",
-                        urgencyClass(days)
+                        "flex items-center justify-between rounded-2xl border p-3 transition border-white/10"
                       )}>
                         <div className="flex items-center gap-3">
                           <span className={cn("size-2 shrink-0 rounded-full", urgencyDot(days))} />
@@ -391,7 +390,7 @@ export function DashboardClient() {
                     );
                   })
                 ) : (
-                  <p className="rounded-2xl bg-white/[0.04] p-5 text-sm text-white/[0.46]">
+                  <p className="p-5 text-sm text-white/50">
                     No renewals in the next 14 days.
                   </p>
                 )}
@@ -493,10 +492,7 @@ export function DashboardClient() {
                     return (
                       <article
                         key={s.id}
-                        className={cn(
-                          "rounded-[24px] border p-4 transition hover:bg-white/[0.06]",
-                          isUrgent ? "border-amber-500/20 bg-amber-500/[0.04]" : "border-white/10 bg-white/[0.035]"
-                        )}
+                        className="rounded-[24px] border border-white/10 p-4 transition"
                       >
                         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                           <div className="flex min-w-0 items-center gap-4">
@@ -531,7 +527,7 @@ export function DashboardClient() {
                             </div>
                             <button
                               onClick={() => { setEditing(s); setIsFormOpen(true); }}
-                              className="grid size-10 place-items-center rounded-full bg-white/[0.08] text-white/70 transition hover:bg-white/[0.14] hover:text-white"
+                              className="grid size-10 place-items-center rounded-full border border-white/10 text-white/70 transition hover:text-white"
                               title="Edit"
                             >
                               <Edit3 className="size-4" />
@@ -546,7 +542,7 @@ export function DashboardClient() {
                                 </button>
                                 <button
                                   onClick={() => setPendingDeleteId(null)}
-                                  className="grid size-10 place-items-center rounded-full bg-white/[0.08] text-white/70 transition hover:bg-white/[0.14] hover:text-white"
+                                  className="grid size-10 place-items-center rounded-full border border-white/10 text-white/70 transition hover:text-white"
                                 >
                                   <X className="size-4" />
                                 </button>
@@ -554,7 +550,7 @@ export function DashboardClient() {
                             ) : (
                               <button
                                 onClick={() => setPendingDeleteId(s.id)}
-                                className="grid size-10 place-items-center rounded-full bg-white/[0.08] text-white/70 transition hover:bg-red-500/[0.18] hover:text-red-100"
+                                className="grid size-10 place-items-center rounded-full border border-white/10 text-white/70 transition hover:text-red-300"
                                 title="Delete"
                               >
                                 <Trash2 className="size-4" />

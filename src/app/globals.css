@@ -4,7 +4,6 @@
 
 :root {
   color-scheme: dark;
-  --background: #030505;
   --foreground: #f7f8f4;
 }
 
@@ -29,40 +28,15 @@ body {
 }
 
 ::selection {
-  background: rgba(217, 236, 224, 0.22);
+  background: rgba(34, 197, 94, 0.3);
   color: #ffffff;
 }
 
-.noise {
-  position: relative;
-  overflow: hidden;
-}
-
-.noise::before {
-  pointer-events: none;
-  position: absolute;
-  inset: 0;
-  content: "";
-  opacity: 0.3;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(circle at center, black, transparent 78%);
-}
-
+/* Only used by the subscription form modal — kept intentionally minimal */
 .glass {
-  border: 1px solid rgba(34, 197, 94, 0.2);
-  background: rgba(0, 0, 0, 0.25);
-  box-shadow: inset 0 1px 0 rgba(34, 197, 94, 0.08), 0 24px 80px rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(22px);
-}
-
-.hero-mist {
-  background:
-    radial-gradient(circle at 76% 24%, rgba(221, 238, 226, 0.72), rgba(195, 215, 206, 0.22) 20rem, transparent 38rem),
-    radial-gradient(circle at 7% 87%, rgba(178, 205, 202, 0.38), transparent 27rem),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.95) 0%, rgba(6, 8, 8, 0.88) 42%, rgba(13, 19, 18, 0.55) 100%);
+  border: 1px solid rgba(34, 197, 94, 0.15);
+  background: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
 }
 
 .text-balance {

@@ -115,17 +115,17 @@ export function SettingsClient() {
                 <option value="CAD">CAD — Canadian Dollar</option>
               </Select>
             </label>
-            <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm text-white/70">
+            <div className="flex items-center justify-between rounded-2xl border border-green-500/15 p-4 text-sm text-white/70">
               <span className="flex items-center gap-3">
                 <Moon className="size-5 text-fog" />
                 Theme
               </span>
-              <span className="flex items-center gap-2 rounded-full bg-white/[0.08] px-3 py-1 text-xs text-white/50">
+              <span className="flex items-center gap-2 rounded-full border border-green-500/15 px-3 py-1 text-xs text-white/50">
                 <Sparkles className="size-3" />
                 Dark
               </span>
             </div>
-            <label className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm text-white/70">
+            <label className="flex items-center justify-between rounded-2xl border border-green-500/15 p-4 text-sm text-white/70">
               <span className="flex items-center gap-3">
                 <Bell className="size-5 text-fog" />
                 Email reminders
@@ -149,7 +149,7 @@ export function SettingsClient() {
           </CardHeader>
           <div className="grid gap-3">
             {reminderOptions.map((option) => (
-              <label key={option.value} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white/70">
+              <label key={option.value} className="flex items-center gap-3 rounded-2xl border border-green-500/15 px-4 py-3 text-sm text-white/70">
                 <input
                   name="reminderOffsets"
                   type="checkbox"
@@ -172,7 +172,7 @@ export function SettingsClient() {
       <Card className="mt-5">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-3">
-            <span className="grid size-12 place-items-center rounded-2xl bg-white/[0.08]">
+            <span className="grid size-12 place-items-center rounded-2xl border border-green-500/15">
               <Palette className="size-5 text-fog" />
             </span>
             <div>
@@ -180,7 +180,7 @@ export function SettingsClient() {
               <p className="text-sm text-white/[0.46]">Dark glass panels, rounded controls, muted gradients, and restrained motion.</p>
             </div>
           </div>
-          <span className="rounded-full bg-white/[0.08] px-4 py-2 text-sm text-white/[0.58]">AevixTrack design language</span>
+          <span className="rounded-full border border-green-500/15 px-4 py-2 text-sm text-white/60">AevixTrack design language</span>
         </div>
       </Card>
     </>

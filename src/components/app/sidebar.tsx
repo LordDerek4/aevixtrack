@@ -30,17 +30,17 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="hidden min-h-screen w-72 shrink-0 border-r border-green-500/20 bg-black/20 px-5 py-6 backdrop-blur-xl lg:flex lg:flex-col">
+    <aside className="hidden min-h-screen w-72 shrink-0 border-r border-green-500/10 px-5 py-6 lg:flex lg:flex-col">
       <Logo />
 
-      <div className="mt-8 rounded-[28px] border border-white/10 bg-white/[0.04] p-3">
-        <div className="flex items-center gap-3 rounded-2xl bg-black/20 px-3 py-2 text-sm text-white/[0.46]">
+      <div className="mt-8 p-3">
+        <div className="flex items-center gap-3 rounded-2xl border border-green-500/20 px-3 py-2 text-sm text-white/50">
           <Search className="size-4" />
           Quick search
         </div>
       </div>
 
-      <nav className="mt-6 grid gap-2">
+      <nav className="mt-6 grid gap-1">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = !item.href.includes("#") && pathname === item.href;
@@ -49,8 +49,8 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-white/[0.58] transition hover:bg-white/[0.08] hover:text-white",
-                active && "bg-white/10 text-white"
+                "flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-white/60 transition hover:text-white",
+                active && "text-green-400 drop-shadow-[0_0_8px_rgba(74,222,128,0.6)]"
               )}
             >
               <Icon className="size-4" />
@@ -60,17 +60,17 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="mt-auto rounded-[28px] border border-white/10 bg-gradient-to-br from-white/12 to-white/[0.03] p-5">
-        <Sparkles className="size-5 text-fog" />
-        <p className="mt-4 text-sm font-medium text-white">Trial watch is active</p>
+      <div className="mt-auto p-5">
+        <Sparkles className="size-5 text-green-400" />
+        <p className="mt-4 text-sm font-medium text-white drop-shadow">Trial watch is active</p>
         <p className="mt-1 text-xs leading-5 text-white/50">
           AevixTrack keeps upcoming renewals and trial endings surfaced.
         </p>
       </div>
 
       {userEmail && (
-        <div className="mt-3 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3">
-          <span className="grid size-8 shrink-0 place-items-center rounded-full bg-fog/20 text-xs font-semibold text-fog">
+        <div className="mt-3 flex items-center gap-3 px-4 py-3">
+          <span className="grid size-8 shrink-0 place-items-center rounded-full border border-green-500/30 text-xs font-semibold text-green-400">
             {userInitials}
           </span>
           <span className="min-w-0 flex-1">
@@ -82,7 +82,7 @@ export function Sidebar() {
 
       <button
         onClick={handleSignOut}
-        className="mt-2 flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-white/[0.58] transition hover:bg-white/[0.08] hover:text-white"
+        className="mt-2 flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-white/50 transition hover:text-white"
       >
         <LogOut className="size-4" />
         Sign out

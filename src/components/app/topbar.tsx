@@ -70,7 +70,7 @@ export function Topbar({
   return (
     <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
       <div>
-        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.08] px-3 py-1 text-xs font-medium text-white/[0.66]">
+        <div className="inline-flex items-center gap-2 rounded-full border border-green-500/20 px-3 py-1 text-xs font-medium text-white/70">
           <ShieldCheck className="size-3.5" />
           {badge}
         </div>
@@ -87,7 +87,7 @@ export function Topbar({
         <div ref={ref} className="relative">
           <button
             onClick={openBell}
-            className="relative grid size-11 place-items-center rounded-2xl bg-white/[0.06] text-white/60 transition hover:bg-white/[0.10] hover:text-white"
+            className="relative grid size-11 place-items-center rounded-2xl border border-green-500/20 text-white/60 transition hover:text-white"
             aria-label="Notifications"
           >
             <Bell className="size-5" />
@@ -99,7 +99,7 @@ export function Topbar({
           </button>
 
           {open && (
-            <div className="absolute right-0 top-14 z-50 w-80 rounded-[20px] border border-green-500/20 bg-black/40 shadow-2xl backdrop-blur-xl">
+            <div className="absolute right-0 top-14 z-50 w-80 rounded-[20px] border border-green-500/20 shadow-2xl backdrop-blur-sm">
               <div className="flex items-center justify-between border-b border-white/[0.08] px-4 py-3">
                 <p className="text-sm font-semibold">Notifications</p>
                 {unread === 0 && notifications.length > 0 && (
