@@ -38,8 +38,8 @@ export default function RootLayout({
           <source src="/Design2.mp4" type="video/mp4" />
         </video>
         <ClerkProvider
-          signInUrl="/login"
-          signUpUrl="/register"
+          signInUrl="/auth"
+          signUpUrl="/auth"
         >
           {children}
           <Toaster richColors position="top-right" theme="dark" />

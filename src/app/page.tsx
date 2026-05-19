@@ -166,8 +166,7 @@ export default function LandingPage() {
         <p>Copyright 2026 AevixTrack. All rights reserved.</p>
         <div className="flex gap-5">
           <Link href="/pricing">Pricing</Link>
-          <Link href="/login">Login</Link>
-          <Link href="/register">Register</Link>
+          <Link href="/auth">Sign in</Link>
         </div>
       </footer>
     </main>

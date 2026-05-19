@@ -31,7 +31,7 @@ export function MarketingNav() {
         </Link>
       </nav>
       <Link
-        href="/register"
+        href="/auth"
         className="inline-flex items-center gap-3 rounded-full px-3 py-2 text-sm font-medium text-white/[0.86] transition hover:bg-white/10 md:px-4"
       >
         <UserRound className="size-5" />
