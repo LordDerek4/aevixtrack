@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { useSignIn, useSignUp } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Check, Eye, EyeOff, Loader2, Bell, BarChart3, ShieldCheck, Sparkles } from "lucide-react";
 
@@ -72,6 +72,8 @@ type Mode = "signin" | "signup";
 
 export default function AuthPage() {
   const router = useRouter();
+  const params = useSearchParams();
+  const redirectTo = params.get("redirect") ?? "/dashboard";
   const { signIn, setActive: setSignInActive, isLoaded: signInLoaded } = useSignIn();
   const { signUp, setActive: setSignUpActive, isLoaded: signUpLoaded } = useSignUp();
 
@@ -111,7 +113,7 @@ export default function AuthPage() {
       await auth.authenticateWithRedirect({
         strategy: "oauth_google",
         redirectUrl: "/sso-callback",
-        redirectUrlComplete: "/dashboard",
+        redirectUrlComplete: redirectTo,
       });
     } catch {
       setError("Google sign-in failed — try again.");
@@ -130,7 +132,7 @@ export default function AuthPage() {
       const result = await signIn.create({ identifier: email, password });
       if (result.status === "complete") {
         await setSignInActive({ session: result.createdSessionId });
-        router.push("/dashboard");
+        router.push(redirectTo);
       }
     } catch (err: any) {
       setError(err?.errors?.[0]?.longMessage ?? err?.errors?.[0]?.message ?? "Incorrect email or password.");
@@ -166,7 +168,7 @@ export default function AuthPage() {
       const result = await signUp.attemptEmailAddressVerification({ code });
       if (result.status === "complete") {
         await setSignUpActive({ session: result.createdSessionId });
-        router.push("/dashboard");
+        router.push(redirectTo);
       }
     } catch (err: any) {
       setVerifyError(err?.errors?.[0]?.longMessage ?? err?.errors?.[0]?.message ?? "Invalid code — try again.");

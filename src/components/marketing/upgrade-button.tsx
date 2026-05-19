@@ -18,7 +18,7 @@ export function UpgradeButton({ plan, className, variant = "secondary" }: Upgrad
 
   async function handleUpgrade() {
     if (!isSignedIn) {
-      router.push(`/register?redirect=/pricing`);
+      router.push(`/auth?redirect=/pricing`);
       return;
     }
 

@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Already subscribed — use billing portal to change plans" }, { status: 400 });
   }
 
-  const appUrl = process.env.APP_URL ?? "https://aevixtrack.netlify.app";
+  const appUrl = process.env.APP_URL ?? "https://aevixtracker.com";
 
   const session = await getStripe().checkout.sessions.create({
     customer: auth.user.stripeCustomerId ?? undefined,
