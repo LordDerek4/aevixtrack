@@ -175,6 +175,12 @@ export function DashboardClient() {
     return () => { mounted = false; };
   }, [router]);
 
+  useEffect(() => {
+    if (!loading && !hasError && window.location.hash === "#subscriptions") {
+      document.getElementById("subscriptions")?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [loading, hasError]);
+
   const stats = useMemo(() => {
     const active = subscriptions.filter(isActive);
     const monthly = active.reduce((sum, s) => sum + monthlyValue(s), 0);

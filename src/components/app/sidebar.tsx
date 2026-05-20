@@ -11,9 +11,9 @@ import { createClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
 
 const navItems = [
-  { label: "Dashboard", href: "/dashboard", icon: BarChart3 },
-  { label: "Subscriptions", href: "/dashboard#subscriptions", icon: CreditCard },
-  { label: "Settings", href: "/settings", icon: Settings }
+  { label: "Dashboard", href: "/dashboard", icon: BarChart3, scroll: null },
+  { label: "Subscriptions", href: "/dashboard", icon: CreditCard, scroll: "subscriptions" },
+  { label: "Settings", href: "/settings", icon: Settings, scroll: null }
 ];
 
 export function Sidebar() {
@@ -28,6 +28,17 @@ export function Sidebar() {
 
   const displayName = user?.user_metadata?.username ?? user?.user_metadata?.full_name ?? user?.email?.split("@")[0] ?? "User";
   const userInitials = displayName.slice(0, 2).toUpperCase();
+
+  function handleNavClick(e: React.MouseEvent, item: typeof navItems[number]) {
+    if (!item.scroll) return;
+    e.preventDefault();
+    const el = document.getElementById(item.scroll);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    } else {
+      router.push(`/dashboard#${item.scroll}`);
+    }
+  }
 
   async function handleSignOut() {
     const supabase = createClient();
@@ -50,11 +61,12 @@ export function Sidebar() {
       <nav className="mt-6 grid gap-1">
         {navItems.map((item) => {
           const Icon = item.icon;
-          const active = !item.href.includes("#") && pathname === item.href;
+          const active = pathname === item.href && !item.scroll;
           return (
             <Link
-              key={item.href}
+              key={item.label}
               href={item.href}
+              onClick={(e) => handleNavClick(e, item)}
               className={cn(
                 "flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-white/60 transition hover:text-white",
                 active && "text-green-400 drop-shadow-[0_0_8px_rgba(74,222,128,0.6)]"
