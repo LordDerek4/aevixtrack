@@ -74,10 +74,10 @@ export function Topbar({
           <ShieldCheck className="size-3.5" />
           {badge}
         </div>
-        <h1 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-white md:text-5xl">
+        <h1 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-white sm:text-3xl md:text-5xl">
           {title}
         </h1>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-white/[0.56] md:text-base">
+        <p className="mt-2 hidden max-w-2xl text-sm leading-6 text-white/[0.56] sm:block md:text-base">
           {description}
         </p>
       </div>

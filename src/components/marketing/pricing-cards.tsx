@@ -25,7 +25,7 @@ export function PricingCards() {
   }, []);
 
   return (
-    <div className="grid gap-5 md:grid-cols-3">
+    <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
       {pricingTiers.map((tier) => {
         const isActive = currentPlan !== null && currentPlan === TIER_MAP[tier.name];
         const glows = tier.highlighted || isActive;
@@ -48,31 +48,31 @@ export function PricingCards() {
               )}
             </div>
 
-            <div className="mt-5 flex items-end gap-2">
+            <div className="mt-4 flex items-end gap-2">
               <span
                 className={
                   glows
-                    ? "text-7xl font-bold tracking-[-0.05em] text-green-400 drop-shadow-[0_0_20px_rgba(74,222,128,0.5)]"
-                    : "text-5xl font-semibold tracking-[-0.05em] text-green-300"
+                    ? "text-5xl font-bold tracking-[-0.05em] text-green-400 drop-shadow-[0_0_20px_rgba(74,222,128,0.5)] md:text-7xl"
+                    : "text-4xl font-semibold tracking-[-0.05em] text-green-300 md:text-5xl"
                 }
               >
                 {tier.price}
               </span>
-              <span className="mb-2 text-white/40">/mo</span>
+              <span className="mb-1.5 text-white/40">/mo</span>
             </div>
 
-            <p className="mt-4 text-sm text-white/55">{tier.description}</p>
+            <p className="mt-3 text-sm text-white/55">{tier.description}</p>
 
-            <div className="mt-8 grid gap-3">
+            <div className="mt-5 grid gap-2">
               {tier.features.map((feature) => (
                 <div key={feature} className="flex items-center gap-3 text-sm">
-                  <Check className="size-4 text-green-400" />
+                  <Check className="size-4 shrink-0 text-green-400" />
                   {feature}
                 </div>
               ))}
             </div>
 
-            <div className="mt-8">
+            <div className="mt-6">
               {tier.name === "Starter" ? (
                 <LinkButton href="/auth" className="w-full" variant="secondary">
                   {currentPlan === "STARTER" ? "Current plan" : "Get started free"}

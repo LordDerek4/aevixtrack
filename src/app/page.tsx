@@ -55,7 +55,7 @@ export default function LandingPage() {
       <section className="mx-auto max-w-7xl px-2 py-20">
         <div className="mb-16 max-w-3xl">
           <Badge className="mb-6">About AevixTrack</Badge>
-          <h2 className="text-5xl font-semibold tracking-[-0.04em] md:text-6xl">
+          <h2 className="text-3xl font-semibold tracking-[-0.04em] sm:text-4xl md:text-5xl lg:text-6xl">
             Stop losing money to subscriptions you forgot about.
           </h2>
           <p className="mt-6 text-lg leading-8 text-white/60">
@@ -96,7 +96,7 @@ export default function LandingPage() {
         <div className="mb-8 flex items-end justify-between gap-4">
           <div>
             <Badge>Pricing</Badge>
-            <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em]">Plans that scale quietly</h2>
+            <h2 className="mt-4 text-2xl font-semibold tracking-[-0.04em] sm:text-3xl md:text-4xl">Plans that scale quietly</h2>
           </div>
           <Link href="/pricing" className="hidden text-sm text-white/60 hover:text-white md:block">
             View pricing
@@ -108,7 +108,7 @@ export default function LandingPage() {
       {/* FAQ */}
       <section id="faq" className="mx-auto max-w-4xl px-2 py-16">
         <Badge>FAQ</Badge>
-        <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em]">The useful details</h2>
+        <h2 className="mt-4 text-2xl font-semibold tracking-[-0.04em] sm:text-4xl">The useful details</h2>
         <div className="mt-8 grid gap-3">
           {faqs.map(([question, answer]) => (
             <details key={question} className="rounded-[24px] border border-white/10 p-5">
@@ -121,7 +121,7 @@ export default function LandingPage() {
 
       {/* CTA */}
       <section className="mx-auto mb-10 max-w-7xl rounded-[34px] border border-green-500/20 p-8 text-center md:p-14">
-        <h2 className="text-4xl font-semibold tracking-[-0.04em] md:text-6xl">Stop paying for forgotten subscriptions.</h2>
+        <h2 className="text-2xl font-semibold tracking-[-0.04em] sm:text-4xl md:text-6xl">Stop paying for forgotten subscriptions.</h2>
         <p className="mx-auto mt-5 max-w-2xl text-white/55">
           Build a clean renewal habit with a dashboard that feels as sharp as the tools it tracks.
         </p>

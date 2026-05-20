@@ -14,7 +14,7 @@ export default function PricingPage() {
 
         <div className="mt-16 max-w-3xl">
           <Badge className="mb-6">Pricing</Badge>
-          <h1 className="text-5xl font-semibold tracking-[-0.06em] md:text-7xl">
+          <h1 className="text-3xl font-semibold tracking-[-0.06em] sm:text-5xl md:text-7xl">
             Premium tracking without premium clutter.
           </h1>
           <p className="mt-6 text-lg leading-8 text-white/60">

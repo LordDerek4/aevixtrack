@@ -15,12 +15,12 @@ export default function SubscriptionsPage() {
         <PricingCards />
       </div>
 
-      <div className="mt-6 flex items-center justify-between rounded-[24px] border border-green-500/15 p-5">
+      <div className="mt-4 flex flex-col gap-4 rounded-[24px] border border-green-500/15 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
         <div>
           <p className="text-sm font-medium text-white">Billing portal</p>
           <p className="mt-1 text-xs text-white/50">Manage invoices, payment methods, and your active subscription through Stripe.</p>
         </div>
-        <ManageBillingButton />
+        <ManageBillingButton className="shrink-0" />
       </div>
     </>
   );

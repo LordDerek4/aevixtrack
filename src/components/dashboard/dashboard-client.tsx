@@ -55,7 +55,7 @@ function urgencyDot(days: number) {
 
 function LogoBadge({ name }: { name: string }) {
   return (
-    <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-white to-fog text-sm font-bold text-black shadow-glow">
+    <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-white to-fog text-xs font-bold text-black shadow-glow md:size-11 md:rounded-2xl md:text-sm">
       {serviceInitials(name)}
     </span>
   );
@@ -453,28 +453,28 @@ export function DashboardClient() {
           {/* Subscriptions list */}
           <section id="subscriptions" className="mt-5">
             <Card>
-              <CardHeader className="flex-col md:flex-row">
-                <div>
+              <CardHeader>
+                <div className="min-w-0 flex-1">
                   <CardTitle>Subscriptions</CardTitle>
-                  <p className="mt-1 text-sm text-white/[0.46]">
+                  <p className="mt-1 text-xs text-white/[0.46] md:text-sm">
                     Search, filter, edit, and manage all tracked services.
-                    {stats.cancelled > 0 ? ` ${stats.cancelled} cancelled — excluded from spend.` : ""}
+                    {stats.cancelled > 0 ? ` ${stats.cancelled} cancelled.` : ""}
                   </p>
                 </div>
-                <Button onClick={openCreate} variant="secondary">
+                <Button onClick={openCreate} variant="secondary" className="shrink-0">
                   <Plus className="size-4" />
-                  Add
+                  <span className="hidden sm:inline">Add</span>
                 </Button>
               </CardHeader>
 
-              <div className="mb-5 grid gap-3 md:grid-cols-[1fr_180px_180px_180px]">
-                <div className="relative">
-                  <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-white/[0.34]" />
+              <div className="mb-5 grid grid-cols-2 gap-2 md:grid-cols-[1fr_160px_160px_160px] md:gap-3">
+                <div className="relative col-span-2 md:col-span-1">
+                  <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-white/[0.34]" />
                   <Input
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Search services"
-                    className="pl-11"
+                    placeholder="Search"
+                    className="pl-10"
                   />
                 </div>
                 <Select value={category} onChange={(e) => setCategory(e.target.value)}>
@@ -488,9 +488,9 @@ export function DashboardClient() {
                   <option value="ARCHIVED">Archived</option>
                 </Select>
                 <Select value={sort} onChange={(e) => setSort(e.target.value as SortKey)}>
-                  <option value="renewalDate">Sort: Renewal date</option>
-                  <option value="cost">Sort: Cost</option>
-                  <option value="serviceName">Sort: Name</option>
+                  <option value="renewalDate">By renewal</option>
+                  <option value="cost">By cost</option>
+                  <option value="serviceName">By name</option>
                 </Select>
               </div>
 
@@ -502,72 +502,70 @@ export function DashboardClient() {
                     return (
                       <article
                         key={s.id}
-                        className="rounded-[24px] border border-white/10 p-4 transition"
+                        className="rounded-[20px] border border-white/10 p-3 transition md:rounded-[24px] md:p-4"
                       >
-                        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                          <div className="flex min-w-0 items-center gap-4">
-                            <LogoBadge name={s.serviceName} />
-                            <div className="min-w-0">
-                              <div className="flex flex-wrap items-center gap-2">
-                                <h3 className="truncate text-base font-semibold">{s.serviceName}</h3>
-                                <Badge>{s.category}</Badge>
-                                {s.isFreeTrial && <Badge className="text-fog">Free trial</Badge>}
-                                {s.status !== "ACTIVE" && <Badge>{s.status.toLowerCase()}</Badge>}
-                                {isUrgent && (
-                                  <span className={cn(
-                                    "rounded-full border px-2 py-0.5 text-[10px] font-medium",
-                                    urgencyClass(days)
-                                  )}>
-                                    {days === 0 ? "Renews today" : days === 1 ? "Renews tomorrow" : `Renews in ${days}d`}
-                                  </span>
-                                )}
-                              </div>
-                              <p className="mt-1 text-sm text-white/[0.46]">
-                                Renews {new Date(s.renewalDate).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })} · {s.billingCycle.toLowerCase()}
-                              </p>
-                              {s.notes && <p className="mt-2 line-clamp-1 text-sm text-white/[0.42]">{s.notes}</p>}
+                        <div className="flex items-center gap-3 md:gap-4">
+                          <LogoBadge name={s.serviceName} />
+                          <div className="min-w-0 flex-1">
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              <h3 className="truncate text-sm font-semibold md:text-base">{s.serviceName}</h3>
+                              <Badge>{s.category}</Badge>
+                              {s.isFreeTrial && <Badge className="text-fog">Trial</Badge>}
+                              {s.status !== "ACTIVE" && <Badge>{s.status.toLowerCase()}</Badge>}
+                              {isUrgent && (
+                                <span className={cn(
+                                  "rounded-full border px-2 py-0.5 text-[10px] font-medium",
+                                  urgencyClass(days)
+                                )}>
+                                  {days === 0 ? "Today" : days === 1 ? "Tomorrow" : `${days}d`}
+                                </span>
+                              )}
                             </div>
+                            <p className="mt-0.5 text-xs text-white/[0.46]">
+                              {new Date(s.renewalDate).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })} · {s.billingCycle.toLowerCase()}
+                            </p>
                           </div>
-                          <div className="flex items-center justify-between gap-3 md:justify-end">
-                            <div className="text-right">
-                              <p className="font-semibold">{fc(Number(s.cost))}</p>
+                          <div className="flex shrink-0 items-center gap-2">
+                            <div className="hidden text-right sm:block">
+                              <p className="text-sm font-semibold">{fc(Number(s.cost))}</p>
                               <p className="text-xs text-white/[0.42]">
-                                {isActive(s) ? `${fc(monthlyValue(s))}/mo equiv.` : "Excluded from spend"}
+                                {isActive(s) ? `${fc(monthlyValue(s))}/mo` : "Cancelled"}
                               </p>
                             </div>
                             <button
                               onClick={() => { setEditing(s); setIsFormOpen(true); }}
-                              className="grid size-10 place-items-center rounded-full border border-white/10 text-white/70 transition hover:text-white"
+                              className="grid size-8 place-items-center rounded-full border border-white/10 text-white/70 transition hover:text-white md:size-10"
                               title="Edit"
                             >
-                              <Edit3 className="size-4" />
+                              <Edit3 className="size-3.5 md:size-4" />
                             </button>
                             {pendingDeleteId === s.id ? (
                               <>
                                 <button
                                   onClick={() => confirmDelete(s.id)}
-                                  className="h-10 rounded-full bg-red-500/20 px-4 text-xs font-medium text-red-200 transition hover:bg-red-500/30"
+                                  className="h-8 rounded-full bg-red-500/20 px-3 text-xs font-medium text-red-200 transition hover:bg-red-500/30 md:h-10 md:px-4"
                                 >
                                   Confirm
                                 </button>
                                 <button
                                   onClick={() => setPendingDeleteId(null)}
-                                  className="grid size-10 place-items-center rounded-full border border-white/10 text-white/70 transition hover:text-white"
+                                  className="grid size-8 place-items-center rounded-full border border-white/10 text-white/70 transition hover:text-white md:size-10"
                                 >
-                                  <X className="size-4" />
+                                  <X className="size-3.5 md:size-4" />
                                 </button>
                               </>
                             ) : (
                               <button
                                 onClick={() => setPendingDeleteId(s.id)}
-                                className="grid size-10 place-items-center rounded-full border border-white/10 text-white/70 transition hover:text-red-300"
+                                className="grid size-8 place-items-center rounded-full border border-white/10 text-white/70 transition hover:text-red-300 md:size-10"
                                 title="Delete"
                               >
-                                <Trash2 className="size-4" />
+                                <Trash2 className="size-3.5 md:size-4" />
                               </button>
                             )}
                           </div>
                         </div>
+                        {s.notes && <p className="mt-2 line-clamp-1 pl-12 text-xs text-white/[0.42] md:pl-14">{s.notes}</p>}
                         <TrialProgress subscription={s} />
                       </article>
                     );
