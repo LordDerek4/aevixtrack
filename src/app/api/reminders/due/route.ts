@@ -15,13 +15,33 @@ const offsetLabel = {
   SEVEN_DAYS: "in 7 days"
 } as const;
 
+function isAuthorized(request: Request): boolean {
+  const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret) return false;
+  // Vercel Cron sends: Authorization: Bearer <CRON_SECRET>
+  const authHeader = request.headers.get("authorization");
+  if (authHeader === `Bearer ${cronSecret}`) return true;
+  // Manual POST trigger uses x-cron-secret
+  const manualHeader = request.headers.get("x-cron-secret");
+  return manualHeader === cronSecret;
+}
+
+// GET — called by Vercel Cron at 08:00 UTC daily (vercel.json)
+export async function GET(request: Request) {
+  return runReminders(request);
+}
+
+// POST — manual trigger for testing
 export async function POST(request: Request) {
+  return runReminders(request);
+}
+
+async function runReminders(request: Request) {
   if (!hasDatabaseConfig()) {
     return NextResponse.json({ error: "Database is not configured" }, { status: 503 });
   }
 
-  const secret = request.headers.get("x-cron-secret");
-  if (!process.env.CRON_SECRET || secret !== process.env.CRON_SECRET) {
+  if (!isAuthorized(request)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
