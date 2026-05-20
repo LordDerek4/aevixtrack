@@ -120,7 +120,7 @@ async function runReminders(request: Request) {
         ).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 
         return resend.emails.send({
-          from: `AevixTrack <reminders@${process.env.RESEND_DOMAIN ?? "aevixtrack.com"}>`,
+          from: `AevixTrack <onboarding@resend.dev>`,
           to: reminder.user.email,
           subject,
           html: `
