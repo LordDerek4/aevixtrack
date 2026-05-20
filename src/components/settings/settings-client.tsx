@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { Bell, Loader2, Moon, Save, Sparkles, User } from "lucide-react";
+import { Bell, Loader2, Save, User } from "lucide-react";
 import { toast } from "sonner";
 import { Topbar } from "@/components/app/topbar";
 import { Button } from "@/components/ui/button";
@@ -168,16 +168,6 @@ export function SettingsClient() {
                 <option value="CAD">CAD — Canadian Dollar</option>
               </Select>
             </label>
-            <div className="flex items-center justify-between rounded-2xl border border-green-500/15 p-4 text-sm text-white/70">
-              <span className="flex items-center gap-3">
-                <Moon className="size-5 text-fog" />
-                Theme
-              </span>
-              <span className="flex items-center gap-2 rounded-full border border-green-500/15 px-3 py-1 text-xs text-white/50">
-                <Sparkles className="size-3" />
-                Dark
-              </span>
-            </div>
             <label className="flex items-center justify-between rounded-2xl border border-green-500/15 p-4 text-sm text-white/70">
               <span className="flex items-center gap-3">
                 <Bell className="size-5 text-fog" />
