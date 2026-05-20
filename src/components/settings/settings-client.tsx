@@ -1,14 +1,13 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { Bell, CreditCard, Loader2, Moon, Palette, Save, Sparkles, User } from "lucide-react";
+import { Bell, Loader2, Moon, Save, Sparkles, User } from "lucide-react";
 import { toast } from "sonner";
 import { Topbar } from "@/components/app/topbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ManageBillingButton, UpgradeButton } from "@/components/marketing/upgrade-button";
 import { reminderOptions } from "@/lib/constants";
 import { settingsSchema } from "@/lib/validations";
 import { createClient } from "@/lib/supabase/client";
@@ -223,52 +222,6 @@ export function SettingsClient() {
         </Card>
       </form>
 
-      <Card className="mt-5">
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="flex items-center gap-3">
-            <span className="grid size-12 place-items-center rounded-2xl border border-green-500/15">
-              <Palette className="size-5 text-fog" />
-            </span>
-            <div>
-              <h2 className="font-semibold">Visual system</h2>
-              <p className="text-sm text-white/[0.46]">Dark glass panels, rounded controls, muted gradients, and restrained motion.</p>
-            </div>
-          </div>
-          <span className="rounded-full border border-green-500/15 px-4 py-2 text-sm text-white/60">AevixTrack design language</span>
-        </div>
-      </Card>
-
-      <Card className="mt-5">
-        <CardHeader>
-          <div className="flex items-center gap-3">
-            <span className="grid size-12 place-items-center rounded-2xl border border-green-500/20">
-              <CreditCard className="size-5 text-green-400" />
-            </span>
-            <div>
-              <CardTitle>Manage Subscriptions</CardTitle>
-              <p className="mt-1 text-sm text-white/[0.46]">View your plan, update payment details, or cancel at any time.</p>
-            </div>
-          </div>
-        </CardHeader>
-        <div className="mt-2 grid gap-4 sm:grid-cols-2">
-          <div className="rounded-2xl border border-green-500/15 p-4">
-            <p className="text-xs text-white/40 uppercase tracking-widest">Current plan</p>
-            <p className="mt-2 text-lg font-semibold text-white">Free</p>
-            <p className="mt-1 text-sm text-white/50">Upgrade to unlock unlimited tracking and email alerts.</p>
-            <div className="mt-4 flex flex-col gap-2">
-              <UpgradeButton plan="PRO" variant="primary" className="w-full justify-center" />
-              <UpgradeButton plan="BUSINESS" variant="secondary" className="w-full justify-center" />
-            </div>
-          </div>
-          <div className="rounded-2xl border border-green-500/15 p-4">
-            <p className="text-xs text-white/40 uppercase tracking-widest">Billing portal</p>
-            <p className="mt-2 text-sm text-white/70 leading-relaxed">
-              Access your invoices, change your payment method, or manage your active subscription directly through Stripe.
-            </p>
-            <ManageBillingButton className="mt-4 w-full justify-center" />
-          </div>
-        </div>
-      </Card>
     </>
   );
 }
