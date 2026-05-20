@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { ArrowRight, Bell, BarChart3, Check, CreditCard, ShieldCheck, Sparkles, Zap } from "lucide-react";
+import { ArrowRight, Bell, BarChart3, CreditCard, ShieldCheck, Sparkles, Zap } from "lucide-react";
 import { MarketingNav } from "@/components/marketing/nav";
+import { PricingCards } from "@/components/marketing/pricing-cards";
 import { Badge } from "@/components/ui/badge";
 import { LinkButton } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { pricingTiers } from "@/lib/constants";
 
 const faqs = [
   ["Can I track yearly subscriptions?", "Yes. AevixTrack shows both monthly and yearly totals — original billing cycles are preserved alongside a monthly equivalent for easy comparison."],
@@ -102,38 +102,7 @@ export default function LandingPage() {
             View pricing
           </Link>
         </div>
-        <div className="grid gap-5 md:grid-cols-3">
-          {pricingTiers.map((tier) => (
-            <div
-              key={tier.name}
-              className={
-                tier.highlighted
-                  ? "rounded-[28px] border border-green-400/70 p-5 py-2 shadow-[0_0_32px_rgba(74,222,128,0.15)]"
-                  : "rounded-[28px] border border-green-500/25 p-5 py-2"
-              }
-            >
-              <p className="text-green-400/70 text-sm font-medium">{tier.name}</p>
-              <div className="mt-5 flex items-end gap-2">
-                <span className={tier.highlighted
-                  ? "text-7xl font-bold tracking-[-0.05em] text-green-400 drop-shadow-[0_0_20px_rgba(74,222,128,0.5)]"
-                  : "text-5xl font-semibold tracking-[-0.05em] text-green-300"
-                }>
-                  {tier.price}
-                </span>
-                <span className="mb-2 text-white/40">/mo</span>
-              </div>
-              <p className="mt-4 text-sm text-white/55">{tier.description}</p>
-              <div className="mt-8 grid gap-3">
-                {tier.features.map((feature) => (
-                  <div key={feature} className="flex items-center gap-3 text-sm">
-                    <Check className="size-4 text-green-400" />
-                    {feature}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+        <PricingCards />
       </section>
 
       {/* FAQ */}

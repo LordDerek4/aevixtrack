@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useUser, useClerk } from "@clerk/nextjs";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { BarChart3, CreditCard, LogOut, Search, Settings, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { Logo } from "@/components/logo";
 import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/client";
+import type { User } from "@supabase/supabase-js";
 
 const navItems = [
   { label: "Dashboard", href: "/dashboard", icon: BarChart3 },
@@ -16,17 +18,22 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { user } = useUser();
-  const { signOut } = useClerk();
+  const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
 
-  const userEmail = user?.emailAddresses[0]?.emailAddress ?? null;
-  const userInitials = user?.firstName
-    ? (user.firstName[0] + (user.lastName?.[0] ?? "")).toUpperCase()
-    : userEmail?.[0]?.toUpperCase() ?? "?";
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+  }, []);
+
+  const displayName = user?.user_metadata?.username ?? user?.user_metadata?.full_name ?? user?.email?.split("@")[0] ?? "User";
+  const userInitials = displayName.slice(0, 2).toUpperCase();
 
   async function handleSignOut() {
-    await signOut({ redirectUrl: "/" });
+    const supabase = createClient();
+    await supabase.auth.signOut();
     toast.success("Signed out");
+    router.push("/auth");
   }
 
   return (
@@ -68,17 +75,15 @@ export function Sidebar() {
         </p>
       </div>
 
-      {userEmail && (
-        <div className="mt-3 flex items-center gap-3 px-4 py-3">
-          <span className="grid size-8 shrink-0 place-items-center rounded-full border border-green-500/30 text-xs font-semibold text-green-400">
-            {userInitials}
-          </span>
-          <span className="min-w-0 flex-1">
-            <p className="truncate text-xs font-medium text-white/80">{userEmail}</p>
-            <p className="text-[10px] text-white/40">Signed in</p>
-          </span>
-        </div>
-      )}
+      <div className="mt-3 flex items-center gap-3 px-4 py-3">
+        <span className="grid size-8 shrink-0 place-items-center rounded-full border border-green-500/30 text-xs font-semibold text-green-400">
+          {userInitials}
+        </span>
+        <span className="min-w-0 flex-1">
+          <p className="truncate text-xs font-medium text-white/80">{displayName}</p>
+          <p className="text-[10px] text-white/40">Signed in</p>
+        </span>
+      </div>
 
       <button
         onClick={handleSignOut}

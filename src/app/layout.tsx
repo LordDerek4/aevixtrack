@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -28,22 +27,26 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
+        {/* GIF background on mobile — no play button, autoplay everywhere */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/Design2.gif"
+          alt=""
+          aria-hidden
+          className="fixed inset-0 -z-10 h-full w-full object-cover lg:hidden"
+        />
+        {/* Video background on desktop */}
         <video
           autoPlay
           muted
           loop
           playsInline
-          className="fixed inset-0 -z-10 h-full w-full object-cover"
+          className="fixed inset-0 -z-10 h-full w-full object-cover hidden lg:block"
         >
           <source src="/Design2.mp4" type="video/mp4" />
         </video>
-        <ClerkProvider
-          signInUrl="/auth"
-          signUpUrl="/auth"
-        >
-          {children}
-          <Toaster richColors position="top-right" theme="dark" />
-        </ClerkProvider>
+        {children}
+        <Toaster richColors position="top-right" theme="dark" />
       </body>
     </html>
   );

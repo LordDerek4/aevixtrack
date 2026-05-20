@@ -1,13 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import type { FormEvent } from "react";
-import { useSignIn, useSignUp } from "@clerk/nextjs";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Check, Eye, EyeOff, Loader2, Bell, BarChart3, ShieldCheck, Sparkles } from "lucide-react";
-
-/* ── brand panel data ─────────────────────────────────────────────── */
+import { createClient } from "@/lib/supabase/client";
 
 const perks = [
   { icon: BarChart3,   text: "Full spend visibility across every subscription" },
@@ -24,8 +22,6 @@ const included = [
   "No credit card required to start",
 ];
 
-/* ── Google SVG ───────────────────────────────────────────────────── */
-
 function GoogleIcon() {
   return (
     <svg className="size-5 shrink-0" viewBox="0 0 24 24" aria-hidden>
@@ -37,163 +33,92 @@ function GoogleIcon() {
   );
 }
 
-/* ── password strength ────────────────────────────────────────────── */
-
 type Strength = "weak" | "medium" | "strong";
 
 function getStrength(pw: string): Strength | null {
   if (!pw) return null;
-  const score = [
-    pw.length >= 8,
-    /[A-Z]/.test(pw),
-    /[a-z]/.test(pw),
-    /[0-9]/.test(pw),
-    /[^A-Za-z0-9]/.test(pw),
-  ].filter(Boolean).length;
+  const score = [pw.length >= 8, /[A-Z]/.test(pw), /[a-z]/.test(pw), /[0-9]/.test(pw), /[^A-Za-z0-9]/.test(pw)].filter(Boolean).length;
   if (score <= 2) return "weak";
   if (score <= 3) return "medium";
   return "strong";
 }
 
-const STRENGTH: Record<Strength, { bars: number; bar: string; text: string; hint: string }> = {
+const STRENGTH = {
   weak:   { bars: 1, bar: "bg-red-400",   text: "text-red-400",   hint: "Add uppercase letters, numbers or symbols" },
   medium: { bars: 2, bar: "bg-amber-400", text: "text-amber-400", hint: "Add a symbol to make it stronger" },
   strong: { bars: 3, bar: "bg-green-400", text: "text-green-400", hint: "Strong password" },
-};
+} as const;
 
-/* ── shared input class ───────────────────────────────────────────── */
-
-const input =
-  "h-11 w-full rounded-2xl border border-green-500/25 bg-transparent px-4 text-sm text-white outline-none placeholder:text-white/25 focus:border-green-400/50 focus:ring-2 focus:ring-green-500/10";
-
-/* ── page ─────────────────────────────────────────────────────────── */
+const inputCls = "h-11 w-full rounded-2xl border border-green-500/25 bg-transparent px-4 text-sm text-white outline-none placeholder:text-white/25 focus:border-green-400/50 focus:ring-2 focus:ring-green-500/10";
 
 type Mode = "signin" | "signup";
 
-export default function AuthPage() {
+function AuthContent() {
   const router = useRouter();
   const params = useSearchParams();
   const redirectTo = params.get("redirect") ?? "/dashboard";
-  const { signIn, setActive: setSignInActive, isLoaded: signInLoaded } = useSignIn();
-  const { signUp, setActive: setSignUpActive, isLoaded: signUpLoaded } = useSignUp();
 
   const [mode, setMode] = useState<Mode>("signin");
-
-  /* shared */
   const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
   const [showPw, setShowPw]     = useState(false);
   const [error, setError]       = useState("");
   const [busy, setBusy]         = useState(false);
-  const [googleBusy, setGoogleBusy] = useState(false);
-
-  /* sign-up verification */
-  const [verifying, setVerifying]   = useState(false);
-  const [code, setCode]             = useState("");
-  const [verifyBusy, setVerifyBusy] = useState(false);
-  const [verifyError, setVerifyError] = useState("");
 
   const strength = getStrength(password);
 
   function switchMode(next: Mode) {
-    setMode(next);
-    setError("");
-    setShowPw(false);
-    setVerifying(false);
-    setCode("");
+    setMode(next); setError(""); setShowPw(false);
   }
-
-  /* ── Google ─────────────────────────────────────────────────────── */
 
   async function handleGoogle() {
-    const auth = mode === "signin" ? signIn : signUp;
-    if (!auth) return;
-    setGoogleBusy(true);
-    try {
-      await auth.authenticateWithRedirect({
-        strategy: "oauth_google",
-        redirectUrl: "/sso-callback",
-        redirectUrlComplete: redirectTo,
-      });
-    } catch {
-      setError("Google sign-in failed — try again.");
-      setGoogleBusy(false);
+    const supabase = createClient();
+    const { error: err } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: `${window.location.origin}/auth/callback?next=${redirectTo}` },
+    });
+    if (err) setError(err.message);
+  }
+
+  async function handleSignIn(e: FormEvent) {
+    e.preventDefault();
+    setBusy(true); setError("");
+    const supabase = createClient();
+    const { error: err } = await supabase.auth.signInWithPassword({ email, password });
+    if (err) {
+      setError(err.message);
+      setBusy(false);
+    } else {
+      router.push(redirectTo);
+      router.refresh();
     }
   }
 
-  /* ── Sign in ────────────────────────────────────────────────────── */
-
-  async function handleSignIn(e: FormEvent<HTMLFormElement>) {
+  async function handleSignUp(e: FormEvent) {
     e.preventDefault();
-    if (!signIn || !setSignInActive) return;
-    setBusy(true);
-    setError("");
-    try {
-      const result = await signIn.create({ identifier: email, password });
-      if (result.status === "complete") {
-        await setSignInActive({ session: result.createdSessionId });
-        router.push(redirectTo);
-      }
-    } catch (err: any) {
-      setError(err?.errors?.[0]?.longMessage ?? err?.errors?.[0]?.message ?? "Incorrect email or password.");
-    } finally {
+    setBusy(true); setError("");
+    const supabase = createClient();
+    const { data, error: err } = await supabase.auth.signUp({ email, password });
+    if (err) {
+      setError(err.message);
+      setBusy(false);
+    } else if (data.session) {
+      router.push(redirectTo);
+      router.refresh();
+    } else {
+      setError("Check your email for a confirmation link to complete sign up.");
       setBusy(false);
     }
   }
-
-  /* ── Sign up ────────────────────────────────────────────────────── */
-
-  async function handleSignUp(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (!signUp) return;
-    setBusy(true);
-    setError("");
-    try {
-      await signUp.create({ emailAddress: email, password });
-      await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
-      setVerifying(true);
-    } catch (err: any) {
-      setError(err?.errors?.[0]?.longMessage ?? err?.errors?.[0]?.message ?? "Could not create account — try again.");
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function handleVerify(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (!signUp || !setSignUpActive) return;
-    setVerifyBusy(true);
-    setVerifyError("");
-    try {
-      const result = await signUp.attemptEmailAddressVerification({ code });
-      if (result.status === "complete") {
-        await setSignUpActive({ session: result.createdSessionId });
-        router.push(redirectTo);
-      }
-    } catch (err: any) {
-      setVerifyError(err?.errors?.[0]?.longMessage ?? err?.errors?.[0]?.message ?? "Invalid code — try again.");
-    } finally {
-      setVerifyBusy(false);
-    }
-  }
-
-  const isLoaded = mode === "signin" ? signInLoaded : signUpLoaded;
-
-  /* ── render ─────────────────────────────────────────────────────── */
 
   return (
     <main className="flex min-h-screen text-white">
-
-      {/* ── Left brand ──────────────────────────────────────────────── */}
       <aside className="hidden lg:flex w-1/2 flex-col justify-between px-16 py-16">
         <Link href="/" className="text-2xl font-bold text-green-400 tracking-tight">AevixTrack</Link>
-
         {mode === "signin" ? (
           <div>
             <h1 className="text-5xl font-semibold tracking-[-0.04em] leading-tight">
-              Welcome back.<br />
-              <span className="text-green-400">Your subscriptions</span><br />
-              are waiting.
+              Welcome back.<br /><span className="text-green-400">Your subscriptions</span><br />are waiting.
             </h1>
             <ul className="mt-10 space-y-5">
               {perks.map(({ icon: Icon, text }) => (
@@ -209,226 +134,113 @@ export default function AuthPage() {
         ) : (
           <div>
             <h1 className="text-5xl font-semibold tracking-[-0.04em] leading-tight">
-              Take control of<br />
-              <span className="text-green-400">every subscription</span><br />
-              you own.
+              Take control of<br /><span className="text-green-400">every subscription</span><br />you own.
             </h1>
             <p className="mt-6 text-base leading-7 text-white/55">
-              The average person wastes £300+ a year on forgotten renewals. AevixTrack surfaces every charge before it happens.
+              The average person wastes £300+ a year on forgotten renewals.
             </p>
             <ul className="mt-8 space-y-4">
               {included.map((item) => (
                 <li key={item} className="flex items-center gap-3 text-sm text-white/65">
-                  <Check className="size-4 shrink-0 text-green-400" />
-                  {item}
+                  <Check className="size-4 shrink-0 text-green-400" />{item}
                 </li>
               ))}
             </ul>
           </div>
         )}
-
         <p className="text-xs text-white/30">© 2026 AevixTrack. All rights reserved.</p>
       </aside>
 
-      {/* ── Right form ──────────────────────────────────────────────── */}
       <section className="flex w-full lg:w-1/2 flex-col items-center justify-center px-6 py-16">
         <div className="w-full max-w-md space-y-6">
 
-          {/* Mobile logo */}
           <div className="flex items-center justify-between lg:hidden">
             <Link href="/" className="text-xl font-bold text-green-400">AevixTrack</Link>
-            <Link href="/" className="text-sm text-green-400/60 hover:text-green-400 transition-colors">← Home</Link>
+            <Link href="/" className="text-sm text-green-400/60 hover:text-green-400">← Home</Link>
           </div>
 
-          {verifying ? (
-            /* ── Verification ──────────────────────────────────────── */
-            <>
-              <div>
-                <h2 className="text-2xl font-semibold">Check your email</h2>
-                <p className="mt-2 text-sm text-white/50">
-                  We sent a 6-digit code to <span className="text-white/80">{email}</span>.
-                </p>
-              </div>
+          <div className="flex rounded-2xl border border-green-500/20 p-1 gap-1">
+            <button type="button" onClick={() => switchMode("signin")}
+              className={mode === "signin" ? "flex-1 rounded-xl py-2 text-sm font-medium bg-green-500 text-black" : "flex-1 rounded-xl py-2 text-sm font-medium text-white/50 hover:text-white"}>
+              Sign in
+            </button>
+            <button type="button" onClick={() => switchMode("signup")}
+              className={mode === "signup" ? "flex-1 rounded-xl py-2 text-sm font-medium bg-green-500 text-black" : "flex-1 rounded-xl py-2 text-sm font-medium text-white/50 hover:text-white"}>
+              Create account
+            </button>
+          </div>
 
-              {verifyError && (
-                <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-300">
-                  {verifyError}
-                </div>
-              )}
+          <div className="hidden lg:flex justify-end">
+            <Link href="/" className="text-sm text-green-400/60 hover:text-green-400">← Home</Link>
+          </div>
 
-              <form onSubmit={handleVerify} className="space-y-4">
-                <div className="space-y-2">
-                  <label className="block text-sm text-white/70" htmlFor="code">Verification code</label>
-                  <input
-                    id="code"
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={6}
-                    required
-                    value={code}
-                    onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-                    placeholder="000000"
-                    className="h-14 w-full rounded-2xl border border-green-500/25 bg-transparent px-4 text-center text-2xl font-semibold tracking-[0.3em] text-white outline-none placeholder:text-white/20 focus:border-green-400/50 focus:ring-2 focus:ring-green-500/10"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={verifyBusy || code.length < 6}
-                  className="flex h-11 w-full items-center justify-center gap-2 rounded-2xl bg-green-500 text-sm font-semibold text-black transition hover:bg-green-400 disabled:opacity-50"
-                >
-                  {verifyBusy ? <Loader2 className="size-4 animate-spin" /> : "Verify & continue"}
-                </button>
-                <button type="button" onClick={() => setVerifying(false)}
-                  className="block w-full text-center text-sm text-white/40 transition hover:text-white/70">
-                  ← Back
-                </button>
-              </form>
-            </>
-          ) : (
-            /* ── Auth form ─────────────────────────────────────────── */
-            <>
-              {/* Tabs */}
-              <div className="flex rounded-2xl border border-green-500/20 p-1 gap-1">
-                <button
-                  type="button"
-                  onClick={() => switchMode("signin")}
-                  className={`flex-1 rounded-xl py-2 text-sm font-medium transition ${
-                    mode === "signin"
-                      ? "bg-green-500 text-black"
-                      : "text-white/50 hover:text-white"
-                  }`}
-                >
-                  Sign in
-                </button>
-                <button
-                  type="button"
-                  onClick={() => switchMode("signup")}
-                  className={`flex-1 rounded-xl py-2 text-sm font-medium transition ${
-                    mode === "signup"
-                      ? "bg-green-500 text-black"
-                      : "text-white/50 hover:text-white"
-                  }`}
-                >
-                  Create account
-                </button>
-              </div>
+          <button type="button" onClick={handleGoogle}
+            className="flex h-11 w-full items-center justify-center gap-3 rounded-2xl border border-white/15 bg-white/5 text-sm font-medium hover:bg-white/10">
+            <GoogleIcon />
+            {mode === "signin" ? "Sign in with Google" : "Sign up with Google"}
+          </button>
 
-              {/* Desktop home link */}
-              <div className="hidden lg:flex justify-end">
-                <Link href="/" className="text-sm text-green-400/60 hover:text-green-400 transition-colors">← Home</Link>
-              </div>
+          <div className="flex items-center gap-3">
+            <span className="h-px flex-1 bg-white/10" />
+            <span className="text-xs text-white/35">or continue with email</span>
+            <span className="h-px flex-1 bg-white/10" />
+          </div>
 
-              {/* Google */}
-              <button
-                type="button"
-                onClick={handleGoogle}
-                disabled={googleBusy || !isLoaded}
-                className="flex h-11 w-full items-center justify-center gap-3 rounded-2xl border border-white/15 bg-white/5 text-sm font-medium transition hover:bg-white/10 disabled:opacity-50"
-              >
-                {googleBusy ? <Loader2 className="size-4 animate-spin" /> : <GoogleIcon />}
-                {mode === "signin" ? "Sign in with Google" : "Sign up with Google"}
-              </button>
 
-              {/* Divider */}
-              <div className="flex items-center gap-3">
-                <span className="h-px flex-1 bg-white/10" />
-                <span className="text-xs text-white/35">or continue with email</span>
-                <span className="h-px flex-1 bg-white/10" />
-              </div>
-
-              {/* Error */}
-              {error && (
-                <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-300">
-                  {error}
-                </div>
-              )}
-
-              {/* Form */}
-              <form onSubmit={mode === "signin" ? handleSignIn : handleSignUp} className="space-y-4">
-
-                <div className="space-y-2">
-                  <label className="block text-sm text-white/70" htmlFor="email">Email address</label>
-                  <input
-                    id="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
-                    className={input}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="block text-sm text-white/70" htmlFor="password">Password</label>
-                  <div className="relative">
-                    <input
-                      id="password"
-                      type={showPw ? "text" : "password"}
-                      autoComplete={mode === "signin" ? "current-password" : "new-password"}
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder={mode === "signin" ? "Enter your password" : "Create a strong password"}
-                      className={`${input} pr-12`}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPw((v) => !v)}
-                      aria-label={showPw ? "Hide password" : "Show password"}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 transition hover:text-white/80"
-                    >
-                      {showPw ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                    </button>
-                  </div>
-
-                  {/* Strength meter — sign up only */}
-                  {mode === "signup" && strength && (
-                    <div className="space-y-1.5">
-                      <div className="flex gap-1.5">
-                        {[0, 1, 2].map((i) => (
-                          <div key={i}
-                            className={`h-1 flex-1 rounded-full transition-all ${i < STRENGTH[strength].bars ? STRENGTH[strength].bar : "bg-white/10"}`}
-                          />
-                        ))}
-                      </div>
-                      <p className={`text-xs ${STRENGTH[strength].text}`}>{STRENGTH[strength].hint}</p>
-                    </div>
-                  )}
-
-                  {/* Forgot password — sign in only */}
-                  {mode === "signin" && (
-                    <div className="text-right">
-                      <Link href="/forgot-password"
-                        className="text-xs text-green-400/60 hover:text-green-400 transition-colors">
-                        Forgot password?
-                      </Link>
-                    </div>
-                  )}
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={busy || !isLoaded || (mode === "signup" && strength === "weak")}
-                  className="flex h-11 w-full items-center justify-center gap-2 rounded-2xl bg-green-500 text-sm font-semibold text-black transition hover:bg-green-400 disabled:opacity-50"
-                >
-                  {busy
-                    ? <Loader2 className="size-4 animate-spin" />
-                    : mode === "signin" ? "Sign in" : "Create account"
-                  }
-                </button>
-
-                {mode === "signup" && strength === "weak" && password.length > 0 && (
-                  <p className="text-center text-xs text-white/35">Strengthen your password to continue</p>
-                )}
-
-              </form>
-            </>
+          {error && (
+            <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-300">{error}</div>
           )}
 
+          <form onSubmit={mode === "signin" ? handleSignIn : handleSignUp} className="space-y-4">
+            <div className="space-y-2">
+              <label className="block text-sm text-white/70">Email address</label>
+              <input id="email" type="email" autoComplete="email" required value={email}
+                onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" className={inputCls} />
+            </div>
+            <div className="space-y-2">
+              <label className="block text-sm text-white/70">Password</label>
+              <div className="relative">
+                <input id="password" type={showPw ? "text" : "password"}
+                  autoComplete={mode === "signin" ? "current-password" : "new-password"}
+                  required value={password} onChange={(e) => setPassword(e.target.value)}
+                  placeholder={mode === "signin" ? "Enter your password" : "Create a strong password"}
+                  className={`${inputCls} pr-12`} />
+                <button type="button" onClick={() => setShowPw(v => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/80">
+                  {showPw ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                </button>
+              </div>
+              {mode === "signup" && strength && (
+                <div className="space-y-1.5">
+                  <div className="flex gap-1.5">
+                    {[0,1,2].map(i => (
+                      <div key={i} className={`h-1 flex-1 rounded-full ${i < STRENGTH[strength].bars ? STRENGTH[strength].bar : "bg-white/10"}`} />
+                    ))}
+                  </div>
+                  <p className={`text-xs ${STRENGTH[strength].text}`}>{STRENGTH[strength].hint}</p>
+                </div>
+              )}
+              {mode === "signin" && (
+                <div className="text-right">
+                  <Link href="/forgot-password" className="text-xs text-green-400/60 hover:text-green-400">Forgot password?</Link>
+                </div>
+              )}
+            </div>
+            <button type="submit" disabled={busy || (mode === "signup" && strength === "weak")}
+              className="flex h-11 w-full items-center justify-center gap-2 rounded-2xl bg-green-500 text-sm font-semibold text-black transition hover:bg-green-400 disabled:opacity-50">
+              {busy ? <Loader2 className="size-4 animate-spin" /> : mode === "signin" ? "Sign in" : "Create account"}
+            </button>
+          </form>
         </div>
       </section>
     </main>
+  );
+}
+
+export default function AuthPage() {
+  return (
+    <Suspense>
+      <AuthContent />
+    </Suspense>
   );
 }

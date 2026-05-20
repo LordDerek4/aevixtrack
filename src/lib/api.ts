@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { currentUser } from "@clerk/nextjs/server";
+import { createClient } from "@/lib/supabase/server";
 import { hasDatabaseConfig } from "@/lib/env";
 import { prisma } from "@/lib/prisma";
 
@@ -8,30 +8,25 @@ export async function requireAppUser() {
     return { error: NextResponse.json({ error: "Database is not configured" }, { status: 503 }) };
   }
 
-  const clerkUser = await currentUser();
-  if (!clerkUser) {
+  const supabase = await createClient();
+  const { data: { user: supabaseUser } } = await supabase.auth.getUser();
+
+  if (!supabaseUser) {
     return { error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };
   }
 
-  const email = clerkUser.emailAddresses[0]?.emailAddress;
-  if (!email) {
-    return { error: NextResponse.json({ error: "No email address on account" }, { status: 401 }) };
-  }
-
   const user = await prisma.user.upsert({
-    where: { id: clerkUser.id },
+    where: { id: supabaseUser.id },
     update: {
-      email,
-      fullName: clerkUser.fullName ?? null
+      email: supabaseUser.email!,
+      fullName: supabaseUser.user_metadata?.full_name ?? null,
     },
     create: {
-      id: clerkUser.id,
-      email,
-      fullName: clerkUser.fullName ?? null,
-      settings: {
-        create: {}
-      }
-    }
+      id: supabaseUser.id,
+      email: supabaseUser.email!,
+      fullName: supabaseUser.user_metadata?.full_name ?? null,
+      settings: { create: {} },
+    },
   });
 
   return { user };
@@ -65,8 +60,8 @@ export function serializeSubscription(subscription: {
     status: subscription.status,
     isFreeTrial: subscription.isFreeTrial,
     trialEndsAt: subscription.trialEndsAt?.toISOString().slice(0, 10) ?? "",
-    reminders: subscription.reminders?.map((reminder) => reminder.offset) ?? [],
+    reminders: subscription.reminders?.map((r) => r.offset) ?? [],
     createdAt: subscription.createdAt.toISOString(),
-    updatedAt: subscription.updatedAt.toISOString()
+    updatedAt: subscription.updatedAt.toISOString(),
   };
 }

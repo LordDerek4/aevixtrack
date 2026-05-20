@@ -1,15 +1,17 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { Bell, Loader2, Moon, Palette, Save, Sparkles } from "lucide-react";
+import { Bell, CreditCard, Loader2, Moon, Palette, Save, Sparkles, User } from "lucide-react";
 import { toast } from "sonner";
 import { Topbar } from "@/components/app/topbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ManageBillingButton, UpgradeButton } from "@/components/marketing/upgrade-button";
 import { reminderOptions } from "@/lib/constants";
 import { settingsSchema } from "@/lib/validations";
+import { createClient } from "@/lib/supabase/client";
 
 export function SettingsClient() {
   const [loading, setLoading] = useState(false);
@@ -17,16 +19,26 @@ export function SettingsClient() {
   const [emailReminders, setEmailReminders] = useState(true);
   const [currency, setCurrency] = useState("USD");
   const [reminderOffsets, setReminderOffsets] = useState<string[]>(["ONE_DAY", "THREE_DAYS", "SEVEN_DAYS"]);
+  const [username, setUsername] = useState("");
+  const [usernameSaving, setUsernameSaving] = useState(false);
 
   useEffect(() => {
     async function loadSettings() {
       try {
-        const response = await fetch("/api/settings");
-        if (!response.ok) return;
-        const data = await response.json();
-        setEmailReminders(data.emailReminders ?? true);
-        setCurrency(data.currency ?? "USD");
-        setReminderOffsets(data.reminderOffsets ?? ["ONE_DAY", "THREE_DAYS", "SEVEN_DAYS"]);
+        const supabase = createClient();
+        const [settingsRes, { data: { user } }] = await Promise.all([
+          fetch("/api/settings"),
+          supabase.auth.getUser(),
+        ]);
+        if (settingsRes.ok) {
+          const data = await settingsRes.json();
+          setEmailReminders(data.emailReminders ?? true);
+          setCurrency(data.currency ?? "USD");
+          setReminderOffsets(data.reminderOffsets ?? ["ONE_DAY", "THREE_DAYS", "SEVEN_DAYS"]);
+        }
+        if (user) {
+          setUsername(user.user_metadata?.username ?? "");
+        }
       } catch {
         // keep defaults
       } finally {
@@ -35,6 +47,21 @@ export function SettingsClient() {
     }
     loadSettings();
   }, []);
+
+  async function saveUsername() {
+    if (!username.trim()) return;
+    setUsernameSaving(true);
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.updateUser({ data: { username: username.trim() } });
+      if (error) throw error;
+      toast.success("Username updated");
+    } catch {
+      toast.error("Could not update username");
+    } finally {
+      setUsernameSaving(false);
+    }
+  }
 
   function toggleOffset(value: string) {
     setReminderOffsets((prev) =>
@@ -97,7 +124,34 @@ export function SettingsClient() {
         description="Manage your currency, reminder defaults, and account preferences."
         badge="Account settings"
       />
-      <form onSubmit={submit} className="mt-8 grid gap-5 lg:grid-cols-[1fr_.8fr]">
+      <Card className="mt-8">
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <span className="grid size-12 place-items-center rounded-2xl border border-green-500/15">
+              <User className="size-5 text-green-400" />
+            </span>
+            <div>
+              <CardTitle>Profile</CardTitle>
+              <p className="mt-1 text-sm text-white/[0.46]">Set the name shown across the app.</p>
+            </div>
+          </div>
+        </CardHeader>
+        <div className="flex gap-3">
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Choose a username"
+            className="h-11 flex-1 rounded-2xl border border-green-500/25 bg-transparent px-4 text-sm text-white outline-none placeholder:text-white/25 focus:border-green-400/50 focus:ring-2 focus:ring-green-500/10"
+          />
+          <Button type="button" onClick={saveUsername} disabled={usernameSaving || !username.trim()}>
+            {usernameSaving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
+            Save
+          </Button>
+        </div>
+      </Card>
+
+      <form onSubmit={submit} className="mt-5 grid gap-5 lg:grid-cols-[1fr_.8fr]">
         <Card>
           <CardHeader>
             <div>
@@ -181,6 +235,38 @@ export function SettingsClient() {
             </div>
           </div>
           <span className="rounded-full border border-green-500/15 px-4 py-2 text-sm text-white/60">AevixTrack design language</span>
+        </div>
+      </Card>
+
+      <Card className="mt-5">
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <span className="grid size-12 place-items-center rounded-2xl border border-green-500/20">
+              <CreditCard className="size-5 text-green-400" />
+            </span>
+            <div>
+              <CardTitle>Manage Subscriptions</CardTitle>
+              <p className="mt-1 text-sm text-white/[0.46]">View your plan, update payment details, or cancel at any time.</p>
+            </div>
+          </div>
+        </CardHeader>
+        <div className="mt-2 grid gap-4 sm:grid-cols-2">
+          <div className="rounded-2xl border border-green-500/15 p-4">
+            <p className="text-xs text-white/40 uppercase tracking-widest">Current plan</p>
+            <p className="mt-2 text-lg font-semibold text-white">Free</p>
+            <p className="mt-1 text-sm text-white/50">Upgrade to unlock unlimited tracking and email alerts.</p>
+            <div className="mt-4 flex flex-col gap-2">
+              <UpgradeButton plan="PRO" variant="primary" className="w-full justify-center" />
+              <UpgradeButton plan="BUSINESS" variant="secondary" className="w-full justify-center" />
+            </div>
+          </div>
+          <div className="rounded-2xl border border-green-500/15 p-4">
+            <p className="text-xs text-white/40 uppercase tracking-widest">Billing portal</p>
+            <p className="mt-2 text-sm text-white/70 leading-relaxed">
+              Access your invoices, change your payment method, or manage your active subscription directly through Stripe.
+            </p>
+            <ManageBillingButton className="mt-4 w-full justify-center" />
+          </div>
         </div>
       </Card>
     </>

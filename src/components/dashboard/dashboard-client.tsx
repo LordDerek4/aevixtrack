@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   AlertTriangle,
   CalendarClock,
@@ -107,6 +108,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
 }
 
 export function DashboardClient() {
+  const router = useRouter();
   const [subscriptions, setSubscriptions] = useState<SubscriptionRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -131,6 +133,7 @@ export function DashboardClient() {
         fetch("/api/subscriptions"),
         fetch("/api/settings")
       ]);
+      if (subsRes.status === 401) { router.push("/auth"); return; }
       if (!subsRes.ok) throw new Error("Failed to load subscriptions");
       const data = (await subsRes.json()) as SubscriptionRecord[];
       setSubscriptions(data);
@@ -154,6 +157,7 @@ export function DashboardClient() {
           fetch("/api/subscriptions"),
           fetch("/api/settings")
         ]);
+        if (subsRes.status === 401) { router.push("/auth"); return; }
         if (!subsRes.ok) throw new Error("Failed to load");
         const data = (await subsRes.json()) as SubscriptionRecord[];
         if (mounted) { setSubscriptions(data); setHasError(false); }
@@ -169,7 +173,7 @@ export function DashboardClient() {
     }
     init();
     return () => { mounted = false; };
-  }, []);
+  }, [router]);
 
   const stats = useMemo(() => {
     const active = subscriptions.filter(isActive);
