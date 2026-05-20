@@ -12,7 +12,7 @@ import type { User } from "@supabase/supabase-js";
 
 const navItems = [
   { label: "Dashboard", href: "/dashboard", icon: BarChart3, scroll: null },
-  { label: "Subscriptions", href: "/dashboard", icon: CreditCard, scroll: "subscriptions" },
+  { label: "Subscriptions", href: "/subscriptions", icon: CreditCard, scroll: null },
   { label: "Settings", href: "/settings", icon: Settings, scroll: null }
 ];
 

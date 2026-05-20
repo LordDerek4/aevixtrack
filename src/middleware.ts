@@ -4,6 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 const protectedPaths = [
   "/dashboard",
   "/settings",
+  "/subscriptions",
   "/api/stripe",
   "/api/subscriptions",
   "/api/settings",
