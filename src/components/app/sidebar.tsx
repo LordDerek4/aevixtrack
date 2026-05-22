@@ -44,7 +44,7 @@ export function Sidebar() {
     const supabase = createClient();
     await supabase.auth.signOut();
     toast.success("Signed out");
-    router.push("/auth");
+    router.push("/");
   }
 
   return (
