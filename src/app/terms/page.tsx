@@ -81,8 +81,8 @@ export default function TermsPage() {
           <h3 className="font-semibold">Contact</h3>
           <p className="mt-2 text-sm text-white/55">
             For questions about these terms, email us at{" "}
-            <a href="mailto:legal@aevixtrack.com" className="text-green-400 hover:underline">
-              legal@aevixtrack.com
+            <a href="mailto:AevixTrack@Hotmail.com" className="text-green-400 hover:underline">
+              AevixTrack@Hotmail.com
             </a>
           </p>
         </div>

@@ -80,11 +80,11 @@ export default function SupportPage() {
             Send us an email and we will get back to you as soon as possible.
           </p>
           <a
-            href="mailto:support@aevixtrack.com"
+            href="mailto:AevixTrack@Hotmail.com"
             className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-green-400"
           >
             <Mail className="size-4" />
-            support@aevixtrack.com
+            AevixTrack@Hotmail.com
           </a>
         </div>
       </div>

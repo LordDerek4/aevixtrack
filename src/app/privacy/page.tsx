@@ -73,8 +73,8 @@ export default function PrivacyPage() {
           <h3 className="font-semibold">Contact</h3>
           <p className="mt-2 text-sm text-white/55">
             For privacy-related questions or data requests, email us at{" "}
-            <a href="mailto:privacy@aevixtrack.com" className="text-green-400 hover:underline">
-              privacy@aevixtrack.com
+            <a href="mailto:AevixTrack@Hotmail.com" className="text-green-400 hover:underline">
+              AevixTrack@Hotmail.com
             </a>
           </p>
         </div>
