@@ -24,17 +24,18 @@ export const pricingTiers = [
     highlighted: false
   },
   {
-    name: "Pro",
-    price: "£8",
-    description: "For people who live in subscriptions.",
-    features: ["Unlimited subscriptions", "Email reminders", "Spend charts and analytics", "Category filtering and sorting"],
-    highlighted: true
-  },
-  {
     name: "Business",
     price: "£18",
-    description: "For growing teams and power users.",
-    features: ["Everything in Pro", "Priority support", "Early access to new features", "Custom reminder schedules"],
-    highlighted: false
+    description: "For individuals and teams who need full control.",
+    features: [
+      "Unlimited subscriptions",
+      "Email reminders",
+      "Spend charts and analytics",
+      "Category filtering and sorting",
+      "Custom reminder schedules",
+      "Priority support",
+      "Early access to new features"
+    ],
+    highlighted: true
   }
 ] as const;

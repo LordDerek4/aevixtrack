@@ -10,7 +10,6 @@ type PlanTier = "STARTER" | "PRO" | "BUSINESS" | null;
 
 const TIER_MAP: Record<string, PlanTier> = {
   Starter: "STARTER",
-  Pro: "PRO",
   Business: "BUSINESS"
 };
 
@@ -25,7 +24,7 @@ export function PricingCards() {
   }, []);
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+    <div className="grid gap-4 sm:grid-cols-2 max-w-2xl">
       {pricingTiers.map((tier) => {
         const isActive = currentPlan !== null && currentPlan === TIER_MAP[tier.name];
         const glows = tier.highlighted || isActive;
@@ -77,10 +76,8 @@ export function PricingCards() {
                 <LinkButton href="/auth" className="w-full" variant="secondary">
                   {currentPlan === "STARTER" ? "Current plan" : "Get started free"}
                 </LinkButton>
-              ) : tier.name === "Pro" ? (
-                <UpgradeButton plan="PRO" className="w-full" variant="primary" selected={isActive} />
               ) : (
-                <UpgradeButton plan="BUSINESS" className="w-full" variant="secondary" selected={isActive} />
+                <UpgradeButton plan="BUSINESS" className="w-full" variant="primary" selected={isActive} />
               )}
             </div>
           </div>
