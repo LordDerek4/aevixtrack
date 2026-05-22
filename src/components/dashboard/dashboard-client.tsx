@@ -107,12 +107,15 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
   );
 }
 
+const STARTER_LIMIT = 10;
+
 export function DashboardClient() {
   const router = useRouter();
   const [subscriptions, setSubscriptions] = useState<SubscriptionRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [currency, setCurrency] = useState("USD");
+  const [planTier, setPlanTier] = useState<"STARTER" | "BUSINESS" | null>(null);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
   const [status, setStatus] = useState<StatusFilter>("All");
@@ -129,9 +132,10 @@ export function DashboardClient() {
 
   async function load() {
     try {
-      const [subsRes, settingsRes] = await Promise.all([
+      const [subsRes, settingsRes, planRes] = await Promise.all([
         fetch("/api/subscriptions"),
-        fetch("/api/settings")
+        fetch("/api/settings"),
+        fetch("/api/user/plan")
       ]);
       if (subsRes.status === 401) { router.push("/auth"); return; }
       if (!subsRes.ok) throw new Error("Failed to load subscriptions");
@@ -141,6 +145,10 @@ export function DashboardClient() {
       if (settingsRes.ok) {
         const settings = await settingsRes.json();
         if (settings.currency) setCurrency(settings.currency);
+      }
+      if (planRes.ok) {
+        const plan = await planRes.json() as { planTier: "STARTER" | "BUSINESS" | null };
+        setPlanTier(plan.planTier);
       }
     } catch {
       setHasError(true);
@@ -153,9 +161,10 @@ export function DashboardClient() {
     let mounted = true;
     async function init() {
       try {
-        const [subsRes, settingsRes] = await Promise.all([
+        const [subsRes, settingsRes, planRes] = await Promise.all([
           fetch("/api/subscriptions"),
-          fetch("/api/settings")
+          fetch("/api/settings"),
+          fetch("/api/user/plan")
         ]);
         if (subsRes.status === 401) { router.push("/auth"); return; }
         if (!subsRes.ok) throw new Error("Failed to load");
@@ -164,6 +173,10 @@ export function DashboardClient() {
         if (settingsRes.ok) {
           const settings = await settingsRes.json();
           if (mounted && settings.currency) setCurrency(settings.currency);
+        }
+        if (planRes.ok) {
+          const plan = await planRes.json() as { planTier: "STARTER" | "BUSINESS" | null };
+          if (mounted) setPlanTier(plan.planTier);
         }
       } catch {
         if (mounted) setHasError(true);
@@ -255,6 +268,14 @@ export function DashboardClient() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(values)
         });
+        if (res.status === 403) {
+          const data = await res.json() as { error: string; message: string };
+          setSubscriptions((prev) => prev.filter((s) => s.id !== tempId));
+          toast.error(data.message, {
+            action: { label: "Upgrade", onClick: () => router.push("/subscriptions") }
+          });
+          return;
+        }
         if (!res.ok) throw new Error();
         const saved = (await res.json()) as SubscriptionRecord;
         setSubscriptions((prev) => prev.map((s) => s.id === tempId ? saved : s));
@@ -447,6 +468,31 @@ export function DashboardClient() {
                   })}
                 </div>
               </Card>
+            </section>
+          )}
+
+          {/* Starter plan usage bar */}
+          {planTier === "STARTER" && (
+            <section className="mt-5">
+              <div className="rounded-[20px] border border-white/10 p-4">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-white/60">Free plan usage</span>
+                  <span className={cn("font-medium", subscriptions.length >= STARTER_LIMIT ? "text-red-400" : "text-white/60")}>
+                    {subscriptions.length} / {STARTER_LIMIT} subscriptions
+                  </span>
+                </div>
+                <div className="mt-2 h-1.5 rounded-full bg-white/[0.08]">
+                  <div
+                    className={cn("h-full rounded-full transition-all", subscriptions.length >= STARTER_LIMIT ? "bg-red-400" : subscriptions.length >= 7 ? "bg-amber-400" : "bg-green-400")}
+                    style={{ width: `${Math.min(100, (subscriptions.length / STARTER_LIMIT) * 100)}%` }}
+                  />
+                </div>
+                {subscriptions.length >= 7 && (
+                  <button onClick={() => router.push("/subscriptions")} className="mt-3 text-xs text-green-400 hover:underline">
+                    Upgrade to Business for unlimited tracking →
+                  </button>
+                )}
+              </div>
             </section>
           )}
 

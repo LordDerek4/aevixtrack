@@ -16,9 +16,21 @@ export async function GET() {
   return NextResponse.json(subscriptions.map(serializeSubscription));
 }
 
+const STARTER_LIMIT = 10;
+
 export async function POST(request: Request) {
   const auth = await requireAppUser();
   if ("error" in auth) return auth.error;
+
+  if (auth.user.planTier === "STARTER") {
+    const count = await prisma.subscription.count({ where: { userId: auth.user.id } });
+    if (count >= STARTER_LIMIT) {
+      return NextResponse.json(
+        { error: "plan_limit", message: "You've reached the 10 subscription limit on the free plan. Upgrade to Business for unlimited tracking." },
+        { status: 403 }
+      );
+    }
+  }
 
   const parsed = subscriptionSchema.safeParse(await request.json());
   if (!parsed.success) {
