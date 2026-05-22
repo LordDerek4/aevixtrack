@@ -16,7 +16,13 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "AevixTrack - Subscription and Free-Trial Tracker",
   description:
-    "Track subscriptions, free trials, renewal dates, and reminder emails in a polished SaaS dashboard."
+    "Track subscriptions, free trials, renewal dates, and reminder emails in a polished SaaS dashboard.",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
+  themeColor: "#22c55e",
 };
 
 export default function RootLayout({
