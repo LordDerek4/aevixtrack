@@ -49,7 +49,7 @@ export function Sidebar() {
 
   return (
     <aside className="hidden min-h-screen w-72 shrink-0 border-r border-green-500/10 px-5 py-6 lg:flex lg:flex-col">
-      <Logo />
+      <Logo href="/dashboard" />
 
       <div className="mt-8 p-3">
         <div className="flex items-center gap-3 rounded-2xl border border-green-500/20 px-3 py-2 text-sm text-white/50">
