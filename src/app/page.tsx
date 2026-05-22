@@ -133,9 +133,12 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="mx-auto flex max-w-7xl flex-col gap-4 px-2 pb-10 text-sm text-white/40 md:flex-row md:items-center md:justify-between">
         <p>Copyright 2026 AevixTrack. All rights reserved.</p>
-        <div className="flex gap-5">
-          <Link href="/pricing">Pricing</Link>
-          <Link href="/auth">Sign in</Link>
+        <div className="flex flex-wrap gap-5">
+          <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
+          <Link href="/support" className="hover:text-white transition-colors">Support</Link>
+          <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+          <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
+          <Link href="/auth" className="hover:text-white transition-colors">Sign in</Link>
         </div>
       </footer>
     </main>

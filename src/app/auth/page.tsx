@@ -148,7 +148,14 @@ function AuthContent() {
             </ul>
           </div>
         )}
-        <p className="text-xs text-white/30">© 2026 AevixTrack. All rights reserved.</p>
+        <div className="flex flex-col gap-2">
+          <p className="text-xs text-white/30">© 2026 AevixTrack. All rights reserved.</p>
+          <div className="flex flex-wrap gap-4 text-xs text-white/30">
+            <Link href="/support" className="hover:text-white transition-colors">Support</Link>
+            <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
+            <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
+          </div>
+        </div>
       </aside>
 
       <section className="flex w-full lg:w-1/2 flex-col items-center justify-center px-6 py-16">

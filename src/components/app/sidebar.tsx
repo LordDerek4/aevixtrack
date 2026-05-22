@@ -104,6 +104,18 @@ export function Sidebar() {
         <LogOut className="size-4" />
         Sign out
       </button>
+
+      <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1 px-4 pb-2">
+        {[
+          { label: "Support", href: "/support" },
+          { label: "Privacy", href: "/privacy" },
+          { label: "Terms", href: "/terms" },
+        ].map(({ label, href }) => (
+          <Link key={href} href={href} className="text-[11px] text-white/25 hover:text-white/60 transition-colors">
+            {label}
+          </Link>
+        ))}
+      </div>
     </aside>
   );
 }
